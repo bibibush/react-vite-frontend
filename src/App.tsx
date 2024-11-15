@@ -1,6 +1,7 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import MainPage from "./mainPage";
 import axios from "axios";
+import AuthenticatedLayout from "./mainPage/AuthenticatedLayout";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
@@ -8,8 +9,17 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <MainPage />,
+      element: (
+        <AuthenticatedLayout>
+          <Outlet />
+        </AuthenticatedLayout>
+      ),
+      children: [
+        {
+          path: "/",
+          element: <MainPage />,
+        },
+      ],
     },
   ]);
 

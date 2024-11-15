@@ -4,7 +4,7 @@ import SideBar from "./SideBar";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   return (
-    <section className="flex bg-[#F7F6F9] lg:h-[1200px]">
+    <section className="flex bg-[#F7F6F9] lg:h-screen">
       <SideBar />
       <div className="flex flex-col w-full">
         <TopBar />

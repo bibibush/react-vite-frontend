@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AuthenticatedLayout from "./AuthenticatedLayout";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 
@@ -15,7 +14,15 @@ function MainPage() {
 
   const handleFetch = async () => {
     try {
-      const res = await axios.get("/api/user/users/");
+      const res = await axios.post("/api/user/users/", {
+        username: "hiee",
+        password: "asad941215",
+        email: "hiwe@hi.com",
+        first_name: "h",
+        last_name: "i",
+        is_staff: false,
+        is_superuser: false,
+      });
       setUserState(res.data);
     } catch (e) {
       console.error(e);
@@ -23,11 +30,7 @@ function MainPage() {
   };
 
   console.log(userState);
-  return (
-    <AuthenticatedLayout>
-      <Button onClick={handleFetch}>하이</Button>
-    </AuthenticatedLayout>
-  );
+  return <Button onClick={handleFetch}>하이</Button>;
 }
 
 export default MainPage;
