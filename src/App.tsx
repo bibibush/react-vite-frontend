@@ -1,10 +1,11 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import MainPage from "./mainPage";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <div className="text-2xl font-bold">하이</div>,
+      element: <MainPage />,
     },
   ]);
 
