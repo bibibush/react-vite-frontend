@@ -1,18 +1,22 @@
-import DashboardIcon from "@/components/ui/menuIcons/DashboardIcon";
-import WalletIcon from "@/components/ui/menuIcons/WalletIcon";
+import DashboardIcon from "@/components/menuIcons/DashboardIcon";
+import UnionIcon from "@/components/menuIcons/UnionIcon";
+import WalletIcon from "@/components/menuIcons/WalletIcon";
 import { IoMail } from "react-icons/io5";
 
 function SideBar() {
   const menuList = [
     {
+      id: 1,
       menuName: "Dashboard",
       icon: <DashboardIcon color="#84828A" />,
     },
     {
+      id: 2,
       menuName: "Exchange",
       icon: <WalletIcon color="#84828A" />,
     },
     {
+      id: 3,
       menuName: "Contact",
       icon: <IoMail color="#84828A" size={24} />,
     },
@@ -27,13 +31,14 @@ function SideBar() {
         {menuList.map((menu) => (
           <div
             className="px-4 py-5 lg:w-[275px] text-[#84828A] flex gap-3 hover:bg-[#EFE9FF] rounded-md duration-200 cursor-pointer"
-            key={menu.menuName}
+            key={menu.id}
           >
             {menu.icon}
             {menu.menuName}
           </div>
         ))}
       </div>
+      <UnionIcon />
     </aside>
   );
 }
