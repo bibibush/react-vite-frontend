@@ -14,7 +14,7 @@ function MainPage() {
 
   const handleFetch = async () => {
     try {
-      const res = await axios.post("/api/user/users/", {
+      const res = await axios.post("/api/users/", {
         username: "hiee",
         password: "asad941215",
         email: "hiwe@hi.com",
