@@ -2,8 +2,8 @@ function UnionIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="206"
-      height="233"
+      width="226"
+      height="263"
       viewBox="0 0 206 233"
       fill="none"
     >
