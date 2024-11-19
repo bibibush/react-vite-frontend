@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
+import axios from "axios";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
+  const handleGetCSRF = async () => {
+    try {
+      await axios.get("/api/users/");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    handleGetCSRF();
+  }, []);
+
   return (
     <section className="flex bg-[#F7F6F9] lg:h-[1200px]">
       <SideBar />
