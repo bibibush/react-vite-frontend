@@ -19,6 +19,14 @@ function App() {
           path: "/",
           element: <MainPage />,
         },
+        {
+          path: "/exchange",
+          element: <></>,
+        },
+        {
+          path: "/contact",
+          element: <></>,
+        },
       ],
     },
   ]);

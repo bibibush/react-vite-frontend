@@ -10,7 +10,9 @@ function TopBar() {
 
         <div className="flex items-center lg:gap-8">
           <InputTopBar />
-          <NotificationIcon />
+          <span className="cursor-pointer">
+            <NotificationIcon />
+          </span>
           <Avatar>
             <AvatarFallback>U</AvatarFallback>
             <AvatarImage alt="U" />

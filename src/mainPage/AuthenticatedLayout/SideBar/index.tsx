@@ -4,23 +4,33 @@ import WalletIcon from "@/components/menuIcons/WalletIcon";
 import { IoMail } from "react-icons/io5";
 import lightImage from "@/assets/light-image.png";
 import LogoutIcon from "@/components/menuIcons/LogoutIcon";
+import { cn } from "@/lib/utils";
+import { Link, useLocation } from "react-router-dom";
 
 function SideBar() {
+  const location = useLocation();
+
   const menuList = [
     {
       id: 1,
       menuName: "Dashboard",
       icon: <DashboardIcon color="#84828A" />,
+      isActive: location.pathname === "/",
+      to: "/",
     },
     {
       id: 2,
       menuName: "Exchange",
       icon: <WalletIcon color="#84828A" />,
+      isActive: location.pathname === "/exchange",
+      to: "/exchange",
     },
     {
       id: 3,
       menuName: "Contact",
       icon: <IoMail color="#84828A" size={24} />,
+      isActive: location.pathname === "/contact",
+      to: "/contact",
     },
   ];
 
@@ -31,13 +41,17 @@ function SideBar() {
       <div className="flex flex-col gap-3 my-14">
         <p className="text-sm font-medium text-[#7E7D82]">User Panel</p>
         {menuList.map((menu) => (
-          <div
-            className="px-4 py-5 lg:w-[275px] text-[#84828A] flex gap-3 hover:bg-[#EFE9FF] rounded-md duration-200 cursor-pointer"
+          <Link
+            className={cn(
+              "px-4 py-5 lg:w-[275px] text-[#84828A] flex gap-3 rounded-md cursor-pointer",
+              menu.isActive ? "bg-[#EFE9FF]" : "hover:bg-[#EFE9FF] duration-200"
+            )}
             key={menu.id}
+            to={menu.to}
           >
             {menu.icon}
             {menu.menuName}
-          </div>
+          </Link>
         ))}
       </div>
       <div className="relative flex justify-center w-full">
