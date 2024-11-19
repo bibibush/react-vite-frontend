@@ -25,7 +25,7 @@ function SideBar() {
   ];
 
   return (
-    <aside className="bg-white lg:w-[315px] h-full flex flex-col p-5">
+    <aside className="bg-white lg:w-[315px] h-full flex flex-col p-5 fixed left-0 top-0 overflow-y-auto sidebar-scroll">
       <div className="text-2xl font-medium text-[#2C2C2C] mt-5">Foxstocks</div>
 
       <div className="flex flex-col gap-3 my-14">
