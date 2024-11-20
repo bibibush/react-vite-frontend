@@ -1,5 +1,5 @@
-import Stock from "@/types/stock";
-import { useQuery } from "@tanstack/react-query";
+import Stock from "@/types/Stock";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 async function getStocksAPI() {
@@ -15,9 +15,11 @@ export default function useGetStocks() {
   const results = useQuery<Stock[]>({
     queryKey: ["stocks"],
     queryFn: getStocksAPI,
+    placeholderData: keepPreviousData,
   });
 
   return {
+    ...results,
     data: results.data,
   };
 }
