@@ -21,7 +21,7 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
       <SideBar />
       <div className="flex flex-col w-full">
         <TopBar />
-        <div className="p-3 ml-[315px] mt-[96px]">{children}</div>
+        <div className="py-3 px-8 ml-[315px] mt-[96px]">{children}</div>
       </div>
     </section>
   );
