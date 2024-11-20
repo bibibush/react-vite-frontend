@@ -19,11 +19,11 @@ function Dashboard() {
   }, [stocks]);
 
   return (
-    <section>
-      <p className="font-semibold text-lg">Stocks</p>
+    <section className="overflow-hidden">
+      <p className="text-lg font-semibold">Stocks</p>
       <main className="flex flex-col gap-5 mt-3">
-        <div className="relative bg-white p-3 rounded-lg shadow-sm lg:w-[1360px] overflow-hidden">
-          <div className="flex items-center gap-2 w-full">
+        <div className="relative bg-white p-3 rounded-lg shadow-sm lg:w-[1060px] 3xl:w-[1360px] overflow-hidden">
+          <div className="flex items-center w-full gap-2">
             {isLoading
               ? Array(5)
                   .fill("")
@@ -35,7 +35,7 @@ function Dashboard() {
                   ))
               : stockList?.map((stock) => (
                   <div
-                    className="lg:py-4 lg:px-3 lg:h-[116px] w-[280px] shrink-0 rounded-lg flex flex-col gap-4"
+                    className="lg:py-4 lg:px-3 lg:h-[116px] w-[280px] shrink-0 rounded-lg flex flex-col justify-between"
                     style={{ backgroundColor: `${stock.color}` }}
                     key={stock.id}
                   >
