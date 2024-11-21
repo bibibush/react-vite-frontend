@@ -4,6 +4,7 @@ import { Skeleton } from "../ui/skeleton";
 import ArrowIcon from "../Icons/ArrowIcon";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import StockItem from "./StockItem";
 
 function Dashboard() {
   const { data: stocks, isLoading } = useGetStocks();
@@ -18,6 +19,7 @@ function Dashboard() {
       color: stock.color,
       price: stock.price,
       increased: stock.increased,
+      decreased: stock.decreased,
       isDomestic: stock.is_domestic,
     }));
   }, [stocks]);
@@ -51,27 +53,15 @@ function Dashboard() {
                     />
                   ))
               : stockList?.map((stock) => (
-                  <div
-                    className="lg:py-4 lg:px-3 lg:h-[116px] lg:w-[280px] shrink-0 rounded-lg flex flex-col justify-between"
-                    style={{ backgroundColor: `${stock.color}` }}
+                  <StockItem
                     key={stock.id}
-                  >
-                    <div className="flex items-start justify-between">
-                      <p className="font-medium text-sm">{stock.name}</p>
-                      <div className="flex flex-col items-center text-sm">
-                        <p>{stock.code}</p>
-                        {stock.increased ? (
-                          <p className="text-[#77B900]">+{stock.increased}원</p>
-                        ) : (
-                          <p className="text-[#FF2F2F]">-원</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-[2px]">
-                      <p className="text-gray-500 text-xs">현재가</p>
-                      <p className="text-lg font-medium">{stock.price}원</p>
-                    </div>
-                  </div>
+                    code={stock.code}
+                    color={stock.color}
+                    name={stock.name}
+                    increased={stock.increased}
+                    decreased={stock.decreased}
+                    price={stock.price}
+                  />
                 ))}
           </div>
 

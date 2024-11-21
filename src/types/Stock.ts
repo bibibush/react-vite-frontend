@@ -6,4 +6,5 @@ export default interface Stock {
   is_domestic: boolean;
   price: string;
   increased: string | null;
+  decreased: string | null;
 }
