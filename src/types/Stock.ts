@@ -5,4 +5,5 @@ export default interface Stock {
   color: string;
   is_domestic: boolean;
   price: string;
+  increased: string | null;
 }

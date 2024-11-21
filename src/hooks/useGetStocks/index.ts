@@ -16,6 +16,7 @@ export default function useGetStocks() {
     queryKey: ["stocks"],
     queryFn: getStocksAPI,
     placeholderData: keepPreviousData,
+    refetchInterval: 60 * 1000,
   });
 
   return {
