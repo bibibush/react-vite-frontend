@@ -13,9 +13,9 @@ function fromSnakeToCamel(data: any): any {
     return _.map(data, fromSnakeToCamel);
   }
 
-  if (_.isObject(data)) {
+  if (_.isPlainObject(data)) {
     return _(data)
-      .mapKeys((_value, key) => _.camelCase(key))
+      .mapKeys((_value, key: string) => _.camelCase(key))
       .mapValues((value) => fromSnakeToCamel(value))
       .value();
   }
@@ -28,9 +28,9 @@ function fromCamelToSnake(data: any): any {
     return _.map(data, fromCamelToSnake);
   }
 
-  if (_.isObject(data)) {
+  if (_.isPlainObject(data)) {
     return _(data)
-      .mapKeys((_value, key) => _.snakeCase(key))
+      .mapKeys((_value, key: string) => _.snakeCase(key))
       .mapValues((value) => fromCamelToSnake(value))
       .value();
   }
