@@ -26,8 +26,10 @@ function StockItem({
           <p>{code}</p>
           {increased ? (
             <p className="text-[#77B900]">+{increased}원</p>
-          ) : (
+          ) : decreased ? (
             <p className="text-[#FF2F2F]">-{decreased}원</p>
+          ) : (
+            <p>0원</p>
           )}
         </div>
       </div>

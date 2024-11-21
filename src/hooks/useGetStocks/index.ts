@@ -1,11 +1,14 @@
+import requestAPI from "@/api";
 import Stock from "@/types/Stock";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 async function getStocksAPI() {
   try {
-    const res = await axios.get("/api/stocks/list/");
-    return res.data;
+    const response = await requestAPI({
+      url: "/api/stocks/list/",
+      method: "GET",
+    });
+    return response;
   } catch (e) {
     console.error(e);
   }

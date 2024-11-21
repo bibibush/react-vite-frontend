@@ -20,7 +20,7 @@ function Dashboard() {
       price: stock.price,
       increased: stock.increased,
       decreased: stock.decreased,
-      isDomestic: stock.is_domestic,
+      isDomestic: stock.isDomestic,
     }));
   }, [stocks]);
 

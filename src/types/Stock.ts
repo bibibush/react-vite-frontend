@@ -3,7 +3,7 @@ export default interface Stock {
   name: string;
   code: string;
   color: string;
-  is_domestic: boolean;
+  isDomestic: boolean;
   price: string;
   increased: string | null;
   decreased: string | null;
