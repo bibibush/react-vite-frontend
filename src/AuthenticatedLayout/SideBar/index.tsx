@@ -1,38 +1,16 @@
-import DashboardIcon from "@/components/menuIcons/DashboardIcon";
 import UnionIcon from "@/components/menuIcons/UnionIcon";
-import WalletIcon from "@/components/menuIcons/WalletIcon";
-import { IoMail } from "react-icons/io5";
 import lightImage from "@/assets/light-image.png";
 import LogoutIcon from "@/components/menuIcons/LogoutIcon";
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from "react-router-dom";
+import useMenuList from "@/hooks/useMenuList";
+import { useFoxStore } from "@/zustand/store";
 
 function SideBar() {
   const location = useLocation();
 
-  const menuList = [
-    {
-      id: 1,
-      menuName: "Dashboard",
-      icon: <DashboardIcon color="#84828A" />,
-      isActive: location.pathname === "/",
-      to: "/",
-    },
-    {
-      id: 2,
-      menuName: "Exchange",
-      icon: <WalletIcon color="#84828A" />,
-      isActive: location.pathname === "/exchange",
-      to: "/exchange",
-    },
-    {
-      id: 3,
-      menuName: "Contact",
-      icon: <IoMail color="#84828A" size={24} />,
-      isActive: location.pathname === "/contact",
-      to: "/contact",
-    },
-  ];
+  const { menuList } = useMenuList({ pathName: location.pathname });
+  const userId = useFoxStore((state) => state.user.id);
 
   return (
     <aside className="bg-white lg:w-[315px] h-full flex flex-col p-5 fixed left-0 top-0 overflow-y-auto sidebar-scroll">
@@ -65,10 +43,12 @@ function SideBar() {
           <br /> don't even think about owing it for 10 minutes.
         </div>
       </div>
-      <div className="mt-20 flex lg-w-[275px] gap-3 text-[#84828A] hover:bg-[#EFE9FF] rounded-md duration-200 cursor-pointer px-4 py-5">
-        <LogoutIcon color="#84828A" />
-        Logout
-      </div>
+      {!!userId && (
+        <div className="mt-20 flex lg-w-[275px] gap-3 text-[#84828A] hover:bg-[#EFE9FF] rounded-md duration-200 cursor-pointer px-4 py-5">
+          <LogoutIcon color="#84828A" />
+          Logout
+        </div>
+      )}
     </aside>
   );
 }
