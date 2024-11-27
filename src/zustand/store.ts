@@ -13,6 +13,7 @@ interface Store {
     createDt: string | null;
   };
   accessToken: string | null;
+  isSignedIn: boolean;
 }
 
 const initialState: Store = {
@@ -27,10 +28,12 @@ const initialState: Store = {
     createDt: null,
   },
   accessToken: null,
+  isSignedIn: false,
 };
 
 export const useFoxStore = create<Store>((set) => ({
   ...initialState,
+  isSignedIn: !!initialState.user.id,
   getAccessToken: (token: string) =>
     set(() => {
       tokenService.setToken("accessToken", token);

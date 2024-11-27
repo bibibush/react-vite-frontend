@@ -10,7 +10,7 @@ function SideBar() {
   const location = useLocation();
 
   const { menuList } = useMenuList({ pathName: location.pathname });
-  const userId = useFoxStore((state) => state.user.id);
+  const isSignedIn = useFoxStore((state) => state.isSignedIn);
 
   return (
     <aside className="bg-white lg:w-[315px] h-full flex flex-col p-5 fixed left-0 top-0 overflow-y-auto sidebar-scroll">
@@ -43,7 +43,7 @@ function SideBar() {
           <br /> don't even think about owing it for 10 minutes.
         </div>
       </div>
-      {!!userId && (
+      {isSignedIn && (
         <div className="mt-20 flex lg-w-[275px] gap-3 text-[#84828A] hover:bg-[#EFE9FF] rounded-md duration-200 cursor-pointer px-4 py-5">
           <LogoutIcon color="#84828A" />
           Logout
