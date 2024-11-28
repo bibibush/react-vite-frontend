@@ -36,7 +36,6 @@ const initialState: Store = {
 
 export const useFoxStore = create<Store & Actions>((set) => ({
   ...initialState,
-  isSignedIn: !!initialState.accessToken,
   setAccessToken: (token: string) =>
     set(() => {
       tokenService.setToken("accessToken", token);
