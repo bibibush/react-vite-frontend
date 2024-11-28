@@ -11,7 +11,7 @@ function Balance() {
           readOnly
         />
         <div className="lg:p-[10px] bg-[#C7FFA5] rounded-lg flex justify-center items-center">
-          5.63%
+          5.55%
         </div>
       </div>
       <p>Invested</p>
