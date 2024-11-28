@@ -22,9 +22,15 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const token = tokenService.getToken("accessToken");
-    if (token) {
-      setAccessToken(token);
+    if (!token) {
+      return;
     }
+
+    setAccessToken(token);
+    const expire = setTimeout(() => {
+      tokenService.removeToken("accessToken");
+    }, 1000 * 60);
+    return () => clearTimeout(expire);
   }, [setAccessToken]);
 
   return (
