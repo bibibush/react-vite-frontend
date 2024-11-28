@@ -2,8 +2,12 @@ import React, { useEffect } from "react";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
+import { useFoxStore } from "@/zustand/store";
+import { tokenService } from "@/lib/tokenService";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
+  const { setAccessToken } = useFoxStore((state) => state);
+
   const handleGetCSRF = async () => {
     try {
       await axios.get("/api/users/");
@@ -15,6 +19,13 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     handleGetCSRF();
   }, []);
+
+  useEffect(() => {
+    const token = tokenService.getToken("accessToken");
+    if (token) {
+      setAccessToken(token);
+    }
+  }, [setAccessToken]);
 
   return (
     <section className="flex bg-[#F7F6F9] lg:h-[1200px]">
