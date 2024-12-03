@@ -14,9 +14,11 @@ interface Store {
   };
   accessToken: string | null;
   isSignedIn: boolean;
+  topbarKeyword: string;
 }
 interface Actions {
   setAccessToken: (token: string) => void;
+  onChangeKeyword: (value: string) => void;
 }
 
 const initialState: Store = {
@@ -32,13 +34,18 @@ const initialState: Store = {
   },
   accessToken: null,
   isSignedIn: false,
+  topbarKeyword: "",
 };
 
 export const useFoxStore = create<Store & Actions>((set) => ({
   ...initialState,
-  setAccessToken: (token: string) =>
+  setAccessToken: (token) =>
     set(() => {
       tokenService.setToken("accessToken", token);
       return { accessToken: token, isSignedIn: true };
+    }),
+  onChangeKeyword: (value) =>
+    set(() => {
+      return { topbarKeyword: value };
     }),
 }));

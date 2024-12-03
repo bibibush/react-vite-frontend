@@ -10,7 +10,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="bg-blue-200 border-0 lg:min-w-[1024px] lg:min-h-[734px]"
+        className="bg-blue-200 border-0 lg:min-w-[830px] lg:min-h-[635px] 3xl:min-w-[1024px] 3xl:min-h-[734px]"
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <SigninMarks />
