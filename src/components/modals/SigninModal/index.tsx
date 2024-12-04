@@ -66,6 +66,11 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
                     value: true,
                     message: "이메일은 필수입력항목입니다.",
                   },
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message:
+                      "이메일 형식이 아닙니다. 이메일 형식으로 입력해주세요.",
+                  },
                 }}
                 placeholder="이메일을 입력해주세요."
               />
