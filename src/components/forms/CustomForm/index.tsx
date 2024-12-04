@@ -8,19 +8,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Control, FieldValues, Path, RegisterOptions } from "react-hook-form";
 
-interface CustomFormProps<T extends FieldValues> {
+interface CustomInputFormProps<T extends FieldValues> {
   control: Control<T>;
+  className?: string;
   name: Path<T>;
   label?: string;
   rules?: RegisterOptions<T>;
+  placeholder?: string;
+  isPassword?: boolean;
 }
 
-function CustomForm<T extends FieldValues>({
+function CustomInputForm<T extends FieldValues>({
   control,
+  className,
   name,
   label,
   rules,
-}: CustomFormProps<T>) {
+  placeholder,
+  isPassword,
+}: CustomInputFormProps<T>) {
   return (
     <FormField
       control={control}
@@ -28,9 +34,14 @@ function CustomForm<T extends FieldValues>({
       rules={rules}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className="font-semibold">{label}</FormLabel>
           <FormControl>
-            <Input {...field} />
+            <Input
+              type={isPassword ? "password" : "text"}
+              className={className}
+              placeholder={placeholder}
+              {...field}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -39,4 +50,4 @@ function CustomForm<T extends FieldValues>({
   );
 }
 
-export default CustomForm;
+export default CustomInputForm;
