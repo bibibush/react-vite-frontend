@@ -19,7 +19,7 @@ function InputTopBar() {
         className="lg:w-[244px] h-10 bg-[#F7F6F9] rounded-lg placeholder:text-[#A49F9F] peer"
         placeholder="     Search for stocks and more"
         {...register("search", {
-          onChange: debounce((e) => onChangeKeyword(e.target.value), 250),
+          onChange: debounce((e) => onChangeKeyword(e.target.value), 300),
         })}
       />
       <span className="absolute top-0 bottom-0 invisible my-auto lg:h-4 lg:left-3 peer-placeholder-shown:visible">
