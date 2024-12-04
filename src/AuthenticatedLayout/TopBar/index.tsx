@@ -13,6 +13,7 @@ import SigninModal from "@/components/modals/SigninModal";
 
 function TopBar() {
   const isSignedIn = useFoxStore((state) => state.isSignedIn);
+  const username = useFoxStore((state) => state.user.username);
 
   const [isOpenSigninModal, setIsOpenSigninModal] = useState<boolean>(false);
 
@@ -26,7 +27,7 @@ function TopBar() {
   return (
     <header className="lg:h-[96px] bg-white fixed top-0 lg:left-[315px] lg:w-[calc(100%-315px)] lg:px-8 lg:py-6 z-20">
       <div className="flex items-center justify-between">
-        <p className="font-medium text-black lg:text-xl">Hello Matt</p>
+        <p className="font-medium text-black lg:text-xl">Hello {username}</p>
 
         <div className="flex items-center lg:gap-8">
           <InputTopBar />
