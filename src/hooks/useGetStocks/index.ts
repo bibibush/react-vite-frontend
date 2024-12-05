@@ -8,7 +8,7 @@ async function getStocksAPI() {
       url: "/api/stocks/list/",
       method: "GET",
     });
-    return response;
+    return response.data;
   } catch (e) {
     console.error(e);
   }

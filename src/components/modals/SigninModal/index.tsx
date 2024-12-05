@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import CustomForm from "@/components/forms/CustomForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { useFoxStore } from "@/zustand/store";
+import requestAPI from "@/api";
 
 interface SigninModalProps {
   isOpen: boolean;
@@ -29,9 +29,13 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
 
   const handleSignin = async (data: AuthenticateFormParams) => {
     try {
-      const res = await axios.post("/api/users/token/", {
-        email: data.userEmail,
-        password: data.password,
+      const res = await requestAPI({
+        url: "/api/users/token/",
+        method: "POST",
+        data: {
+          email: data.userEmail,
+          password: data.password,
+        },
       });
 
       setAccessToken(res.data.access);
