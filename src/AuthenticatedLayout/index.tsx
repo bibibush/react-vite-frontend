@@ -6,7 +6,7 @@ import { useFoxStore } from "@/zustand/store";
 import { tokenService } from "@/lib/tokenService";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
-  const { setAccessToken } = useFoxStore((state) => state);
+  const { setAccessToken, onSignout } = useFoxStore((state) => state);
 
   const handleGetCSRF = async () => {
     try {
@@ -27,11 +27,11 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
     }
 
     setAccessToken(token);
-    const expire = setTimeout(() => {
+    setTimeout(() => {
       tokenService.removeToken("accessToken");
+      onSignout();
     }, 1000 * 60);
-    return () => clearTimeout(expire);
-  }, [setAccessToken]);
+  }, [setAccessToken, onSignout]);
 
   return (
     <section className="flex bg-[#F7F6F9] lg:h-[1200px]">

@@ -1,6 +1,6 @@
 import SigninMarks from "@/components/SigninMarks";
 import SkyBalloon from "@/assets/skyballoon.png";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
 import CustomForm from "@/components/forms/CustomForm";
 import { Form } from "@/components/ui/form";
@@ -19,8 +19,13 @@ interface AuthenticateFormParams {
 }
 
 function SigninModal({ isOpen, onClose }: SigninModalProps) {
-  const methods = useForm<AuthenticateFormParams>();
-  const setAccessToken = useFoxStore((state) => state.setAccessToken);
+  const methods = useForm<AuthenticateFormParams>({
+    defaultValues: {
+      userEmail: "",
+      password: "",
+    },
+  });
+  const { setAccessToken, setUser } = useFoxStore((state) => state);
 
   const handleSignin = async (data: AuthenticateFormParams) => {
     try {
@@ -28,7 +33,11 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
         email: data.userEmail,
         password: data.password,
       });
+
       setAccessToken(res.data.access);
+      setUser(res.data.user);
+      methods.reset();
+      onClose();
     } catch (e) {
       console.error(e);
     }
@@ -37,13 +46,14 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="bg-blue-100 border-0 lg:min-w-[830px] lg:min-h-[635px] 3xl:min-w-[1024px] 3xl:min-h-[734px]"
+        className="bg-blue-100 border-0 lg:min-w-[830px] lg:min-h-[635px] 3xl:min-w-[1024px]"
         onPointerDownOutside={(e) => e.preventDefault()}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
+        <DialogTitle hidden />
         <SigninMarks />
         <img
-          className="absolute 3xl:top-[120px] 3xl:left-10 3xl:w-[269px]"
+          className="absolute 3xl:top-[80px] 3xl:left-10 3xl:w-[269px]"
           src={SkyBalloon}
           alt="열기구"
         />

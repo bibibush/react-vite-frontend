@@ -1,17 +1,9 @@
 import { tokenService } from "@/lib/tokenService";
+import User from "@/types/User";
 import { create } from "zustand";
 
 interface Store {
-  user: {
-    id: number | null;
-    isSuperuser: boolean;
-    username: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-    isStaff: boolean;
-    createDt: string | null;
-  };
+  user: User;
   accessToken: string | null;
   isSignedIn: boolean;
   topbarKeyword: string;
@@ -19,6 +11,8 @@ interface Store {
 interface Actions {
   setAccessToken: (token: string) => void;
   onChangeKeyword: (value: string) => void;
+  setUser: (user: User) => void;
+  onSignout: () => void;
 }
 
 const initialState: Store = {
@@ -30,7 +24,7 @@ const initialState: Store = {
     lastName: null,
     email: null,
     isStaff: false,
-    createDt: null,
+    dateJoined: null,
   },
   accessToken: null,
   isSignedIn: false,
@@ -47,5 +41,14 @@ export const useFoxStore = create<Store & Actions>((set) => ({
   onChangeKeyword: (value) =>
     set(() => {
       return { topbarKeyword: value };
+    }),
+  setUser: (user) =>
+    set(() => {
+      return { user };
+    }),
+  onSignout: () =>
+    set(() => {
+      tokenService.removeToken("accessToken");
+      return initialState;
     }),
 }));

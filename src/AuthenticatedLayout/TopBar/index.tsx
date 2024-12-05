@@ -14,6 +14,7 @@ import SigninModal from "@/components/modals/SigninModal";
 function TopBar() {
   const isSignedIn = useFoxStore((state) => state.isSignedIn);
   const username = useFoxStore((state) => state.user.username);
+  const onSignout = useFoxStore((state) => state.onSignout);
 
   const [isOpenSigninModal, setIsOpenSigninModal] = useState<boolean>(false);
 
@@ -44,7 +45,10 @@ function TopBar() {
             <PopoverContent className="w-[180px]">
               <div className="flex flex-col gap-2">
                 {isSignedIn ? (
-                  <span className="flex gap-2">
+                  <span
+                    className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+                    onClick={onSignout}
+                  >
                     <LogoutIcon color="#84828A" />
                     Logout
                   </span>
