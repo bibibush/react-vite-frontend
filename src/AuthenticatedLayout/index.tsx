@@ -27,10 +27,12 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
     }
 
     setAccessToken(token);
-    setTimeout(() => {
+    const expireAccessToken = setTimeout(() => {
       tokenService.removeToken("accessToken");
       onSignout();
-    }, 1000 * 60);
+    }, 1000 * 60 * 10);
+
+    return () => clearTimeout(expireAccessToken);
   }, [setAccessToken, onSignout]);
 
   return (

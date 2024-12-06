@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { tokenService } from "@/lib/tokenService";
 import axios, { AxiosRequestConfig, Method } from "axios";
 import _ from "lodash";
 
@@ -39,6 +40,7 @@ function fromCamelToSnake(data: any): any {
 }
 
 export default function requestAPI({
+  headers,
   params,
   method,
   url,
@@ -46,16 +48,28 @@ export default function requestAPI({
   ...config
 }: requestParams) {
   if (withJWT) {
-    return;
+    const token = tokenService.getToken("accessToken");
+    if (!token) {
+      const error = Object.assign(new Error("Unauthorized"), {
+        response: {
+          status: 401,
+          statusText: "Unauthorized",
+        },
+      });
+
+      return Promise.reject(error);
+    }
+
+    headers = { ...headers, Authorization: `Bearer ${token}` };
   }
 
   return axios
     .request(
       fromCamelToSnake({
+        headers,
         url,
         method,
         params,
-        withCredentials: process.env.NODE_ENV === "development" ? true : false,
         ...config,
       })
     )
