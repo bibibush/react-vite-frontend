@@ -13,8 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        // target: "https://foxstocks.site",
-        target: "http://localhost:8000",
+        target: "https://foxstocks.site",
         secure: false,
       },
     },
