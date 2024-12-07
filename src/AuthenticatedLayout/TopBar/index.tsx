@@ -8,8 +8,9 @@ import {
 } from "@/components/ui/popover";
 import LogoutIcon from "@/components/menuIcons/LogoutIcon";
 import { useFoxStore } from "@/zustand/store";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import SigninModal from "@/components/modals/SigninModal";
+import RegisterModal from "@/components/modals/RegisterModal";
 
 function TopBar() {
   const isSignedIn = useFoxStore((state) => state.isSignedIn);
@@ -17,12 +18,21 @@ function TopBar() {
   const onSignout = useFoxStore((state) => state.onSignout);
 
   const [isOpenSigninModal, setIsOpenSigninModal] = useState<boolean>(false);
+  const [isOpenRegisterModal, setIsOpenRegisterModal] =
+    useState<boolean>(false);
 
   const handleOpenSigninModal = () => {
     setIsOpenSigninModal(true);
   };
   const handleCloseSigninModal = () => {
     setIsOpenSigninModal(false);
+  };
+
+  const handleOpenRegisterModal = () => {
+    setIsOpenRegisterModal(true);
+  };
+  const handleCloseRegisterModal = () => {
+    setIsOpenRegisterModal(false);
   };
 
   return (
@@ -53,13 +63,22 @@ function TopBar() {
                     Logout
                   </span>
                 ) : (
-                  <span
-                    className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
-                    onClick={handleOpenSigninModal}
-                  >
-                    <LogoutIcon color="#84828A" />
-                    Login
-                  </span>
+                  <Fragment>
+                    <span
+                      className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+                      onClick={handleOpenSigninModal}
+                    >
+                      <LogoutIcon color="#84828A" />
+                      Login
+                    </span>
+                    <span
+                      className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+                      onClick={handleOpenRegisterModal}
+                    >
+                      <LogoutIcon color="#84828A" />
+                      register
+                    </span>
+                  </Fragment>
                 )}
               </div>
             </PopoverContent>
@@ -70,6 +89,12 @@ function TopBar() {
         <SigninModal
           isOpen={isOpenSigninModal}
           onClose={handleCloseSigninModal}
+        />
+      )}
+      {isOpenRegisterModal && (
+        <RegisterModal
+          isOpen={isOpenRegisterModal}
+          onClose={handleCloseRegisterModal}
         />
       )}
     </header>

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import TopBar from "./TopBar";
 import SideBar from "./SideBar";
 import axios from "axios";
 import { useFoxStore } from "@/zustand/store";
 import { tokenService } from "@/lib/tokenService";
+import { cookieService } from "@/lib/cookieService";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const { setAccessToken, onSignout } = useFoxStore((state) => state);
@@ -16,22 +17,44 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const handleRefresh = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (refresh: any) => {
+      if (!refresh) {
+        onSignout();
+        return;
+      }
+
+      try {
+        const res = await axios.post("/api/users/token/refresh/", { refresh });
+        setAccessToken(res.data.access);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [setAccessToken, onSignout]
+  );
+
   useEffect(() => {
     handleGetCSRF();
   }, []);
 
   useEffect(() => {
     const token = tokenService.getToken("accessToken");
-    if (!token) {
+    const refresh = cookieService.getCookie("refreshToken");
+    if (!refresh || !token) {
+      onSignout();
       return;
     }
 
     setAccessToken(token);
-    setTimeout(() => {
+    const expireAccessToken = setTimeout(() => {
       tokenService.removeToken("accessToken");
-      onSignout();
-    }, 1000 * 60);
-  }, [setAccessToken, onSignout]);
+      handleRefresh(refresh);
+    }, 1000 * 60 * 10);
+
+    return () => clearTimeout(expireAccessToken);
+  }, [setAccessToken, onSignout, handleRefresh]);
 
   return (
     <section className="flex bg-[#F7F6F9] lg:h-[1200px]">

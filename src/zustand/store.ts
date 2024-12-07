@@ -1,3 +1,4 @@
+import { cookieService } from "@/lib/cookieService";
 import { tokenService } from "@/lib/tokenService";
 import User from "@/types/User";
 import { create } from "zustand";
@@ -48,6 +49,7 @@ export const useFoxStore = create<Store & Actions>((set) => ({
     }),
   onSignout: () =>
     set(() => {
+      cookieService.removeCookie("refreshToken");
       tokenService.removeToken("accessToken");
       return initialState;
     }),
