@@ -2,7 +2,7 @@ import SigninMarks from "@/components/SigninMarks";
 import SkyBalloon from "@/assets/skyballoon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
-import CustomForm from "@/components/forms/CustomForm";
+import CustomInputForm from "@/components/forms/CustomInputForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
@@ -31,8 +31,8 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
   const handleRegister = async (data: RegisterFormParams) => {
     const formData = new FormData();
-    for (const key in data) {
-      formData.append(key, data[key as keyof RegisterFormParams]);
+    for (const [key, value] of Object.entries(data)) {
+      formData.append(key, value);
     }
     try {
       await axios.post("/api/users/create/", formData);
@@ -58,7 +58,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
           alt="열기구"
         />
         <section className="absolute lg:w-[65%] h-full top-0 right-0 rounded-l-lg bg-white p-11">
-          <p className="text-2xl font-semibold mt-14 text-center">
+          <p className="text-2xl font-semibold text-center mt-14">
             Sign up with your Email
           </p>
           <Form {...methods}>
@@ -66,7 +66,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
               className="flex flex-col items-center gap-5 mt-10"
               onSubmit={methods.handleSubmit(handleRegister)}
             >
-              <CustomForm<RegisterFormParams>
+              <CustomInputForm<RegisterFormParams>
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="email"
@@ -84,7 +84,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 }}
                 placeholder="이메일을 입력해주세요."
               />
-              <CustomForm<RegisterFormParams>
+              <CustomInputForm<RegisterFormParams>
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="username"
@@ -97,7 +97,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 }}
                 placeholder="유저이름을 입력해주세요."
               />
-              <CustomForm<RegisterFormParams>
+              <CustomInputForm<RegisterFormParams>
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="password1"
@@ -111,7 +111,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 placeholder="비밀번호를 입력해주세요."
                 isPassword
               />
-              <CustomForm<RegisterFormParams>
+              <CustomInputForm<RegisterFormParams>
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="password2"

@@ -2,11 +2,12 @@ import SigninMarks from "@/components/SigninMarks";
 import SkyBalloon from "@/assets/skyballoon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
-import CustomForm from "@/components/forms/CustomForm";
+import CustomInputForm from "@/components/forms/CustomInputForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useFoxStore } from "@/zustand/store";
 import requestAPI from "@/api";
+import { cookieService } from "@/lib/cookieService";
 
 interface SigninModalProps {
   isOpen: boolean;
@@ -39,6 +40,9 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
         withJWT: false,
       });
 
+      cookieService.setCookie("refreshToken", res.data.refresh, {
+        maxAge: 60 * 30,
+      });
       setAccessToken(res.data.access);
       setUser(res.data.user);
       methods.reset();
@@ -63,7 +67,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
           alt="열기구"
         />
         <section className="absolute lg:w-[65%] h-full top-0 right-0 rounded-l-lg bg-white p-11">
-          <p className="text-2xl font-semibold mt-14 text-center">
+          <p className="text-2xl font-semibold text-center mt-14">
             Signin with your Email
           </p>
           <Form {...methods}>
@@ -71,7 +75,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
               className="flex flex-col items-center gap-5 mt-10"
               onSubmit={methods.handleSubmit(handleSignin)}
             >
-              <CustomForm<AuthenticateFormParams>
+              <CustomInputForm<AuthenticateFormParams>
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="userEmail"
@@ -89,7 +93,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
                 }}
                 placeholder="이메일을 입력해주세요."
               />
-              <CustomForm<AuthenticateFormParams>
+              <CustomInputForm<AuthenticateFormParams>
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="password"
