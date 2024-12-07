@@ -107,6 +107,12 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                     value: true,
                     message: "비밀번호는 필수입력항목입니다.",
                   },
+                  pattern: {
+                    value:
+                      /^(?=(.*[a-zA-Z]))(?=(.*\d))(?=(.*[\W_]))[a-zA-Z0-9\W_]{8,}$/,
+                    message:
+                      "비밀번호는 하나 이상의 영문자, 숫자,특수기호가 들어간 8자리 이상이여야 합니다.",
+                  },
                 }}
                 placeholder="비밀번호를 입력해주세요."
                 isPassword
