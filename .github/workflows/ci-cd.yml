@@ -29,3 +29,16 @@ jobs:
 
       - name: Deploy to s3
         run: aws s3 sync ./dist s3://foxstocks-vite
+
+      - name: Connecting to ssh
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ubuntu
+          key: ${{secrets.EC2_SSH_KEY}}
+          port: 22
+          script: |
+            cd Foxstocks_Django_backend
+            aws s3 sync s3://foxstocks-vite ./dist
+            docker stop my-nginx
+            docker compose up -d nginx
