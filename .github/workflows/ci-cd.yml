@@ -39,6 +39,7 @@ jobs:
           port: 22
           script: |
             cd Foxstocks_Django_backend
+            rm -rf dist
             aws s3 sync s3://foxstocks-vite ./dist
             docker stop my-nginx
             docker compose up -d nginx
