@@ -10,9 +10,11 @@ import useGetMyProfile from "@/hooks/useGetMyProfile";
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   const { accessToken, setAccessToken, onSignout, setUser, setUserId } =
     useFoxStore((state) => state);
-  const userId = String(useFoxStore((state) => state.user.id));
+  const userId = useFoxStore((state) => state.user.id);
 
-  const { data: myUserData } = useGetMyProfile({ userId });
+  const { data: myUserData } = useGetMyProfile({
+    userId: userId ? String(userId) : null,
+  });
 
   const handleGetCSRF = async () => {
     try {
