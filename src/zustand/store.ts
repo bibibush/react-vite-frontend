@@ -13,6 +13,7 @@ interface Actions {
   setAccessToken: (token: string) => void;
   onChangeKeyword: (value: string) => void;
   setUser: (user: User) => void;
+  setUserId: (userId: string) => void;
   onSignout: () => void;
 }
 
@@ -43,9 +44,13 @@ export const useFoxStore = create<Store & Actions>((set) => ({
     set(() => {
       return { topbarKeyword: value };
     }),
+  setUserId: (userId) =>
+    set((state) => {
+      tokenService.setToken("userId", userId);
+      return { user: { ...state.user, id: Number(userId) } };
+    }),
   setUser: (user) =>
     set(() => {
-      tokenService.setToken("userId", String(user.id));
       return { user };
     }),
   onSignout: () =>

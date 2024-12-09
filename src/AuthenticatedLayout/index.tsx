@@ -8,10 +8,9 @@ import { cookieService } from "@/lib/cookieService";
 import useGetMyProfile from "@/hooks/useGetMyProfile";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
-  const { accessToken, setAccessToken, onSignout, setUser } = useFoxStore(
-    (state) => state
-  );
-  const userId = tokenService.getToken("userId");
+  const { accessToken, setAccessToken, onSignout, setUser, setUserId } =
+    useFoxStore((state) => state);
+  const userId = String(useFoxStore((state) => state.user.id));
 
   const { data: myUserData } = useGetMyProfile({ userId });
 
@@ -47,14 +46,16 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const token = tokenService.getToken("accessToken");
+    const userId = tokenService.getToken("userId");
 
-    if (!token) {
+    if (!token || !userId) {
       onSignout();
       return;
     }
 
+    setUserId(userId);
     setAccessToken(token);
-  }, [setAccessToken, onSignout]);
+  }, [setAccessToken, onSignout, setUserId]);
 
   useEffect(() => {
     const refresh = cookieService.getCookie("refreshToken");

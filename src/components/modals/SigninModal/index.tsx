@@ -26,7 +26,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
       password: "",
     },
   });
-  const { setAccessToken, setUser } = useFoxStore((state) => state);
+  const { setAccessToken, setUserId } = useFoxStore((state) => state);
 
   const handleSignin = async (data: AuthenticateFormParams) => {
     try {
@@ -44,7 +44,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
         maxAge: 60 * 30,
       });
       setAccessToken(res.data.access);
-      setUser(res.data.user);
+      setUserId(String(res.data.user.id));
       methods.reset();
       onClose();
     } catch (e) {
