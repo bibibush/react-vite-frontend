@@ -5,9 +5,13 @@ import axios from "axios";
 import { useFoxStore } from "@/zustand/store";
 import { tokenService } from "@/lib/tokenService";
 import { cookieService } from "@/lib/cookieService";
+import useGetMyProfile from "@/hooks/useGetMyProfile";
 
 function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
-  const { setAccessToken, onSignout } = useFoxStore((state) => state);
+  const { setAccessToken, onSignout, setUser } = useFoxStore((state) => state);
+  const userId = tokenService.getToken("userId");
+
+  const { data: myUserData } = useGetMyProfile({ userId });
 
   const handleGetCSRF = async () => {
     try {
@@ -49,12 +53,20 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
 
     setAccessToken(token);
     const expireAccessToken = setTimeout(() => {
-      tokenService.removeToken("accessToken");
+      tokenService.removeToken(["accessToken"]);
       handleRefresh(refresh);
     }, 1000 * 60 * 10);
 
     return () => clearTimeout(expireAccessToken);
   }, [setAccessToken, onSignout, handleRefresh]);
+
+  useEffect(() => {
+    if (!myUserData) {
+      return;
+    }
+
+    setUser(myUserData);
+  }, [myUserData, setUser]);
 
   return (
     <section className="flex bg-[#F7F6F9] lg:h-[1200px]">

@@ -7,7 +7,9 @@ export const tokenService = {
   setToken(key: string, value: string) {
     localStorage.setItem(key, value);
   },
-  removeToken(key: string) {
-    localStorage.removeItem(key);
+  removeToken(key: string[]) {
+    for (const k of key) {
+      localStorage.removeItem(k);
+    }
   },
 };

@@ -73,6 +73,6 @@ export default function requestAPI({
         ...config,
       })
     )
-    .then((response) => fromSnakeToCamel(response))
+    .then((response) => Promise.resolve(fromSnakeToCamel(response)))
     .catch((error) => Promise.reject(error));
 }

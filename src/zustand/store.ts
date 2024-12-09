@@ -45,12 +45,13 @@ export const useFoxStore = create<Store & Actions>((set) => ({
     }),
   setUser: (user) =>
     set(() => {
+      tokenService.setToken("userId", String(user.id));
       return { user };
     }),
   onSignout: () =>
     set(() => {
       cookieService.removeCookie("refreshToken");
-      tokenService.removeToken("accessToken");
+      tokenService.removeToken(["accessToken", "userId"]);
       return initialState;
     }),
 }));
