@@ -27,6 +27,7 @@ const initialState: Store = {
     email: null,
     isStaff: false,
     dateJoined: null,
+    invests: null,
   },
   accessToken: null,
   isSignedIn: false,

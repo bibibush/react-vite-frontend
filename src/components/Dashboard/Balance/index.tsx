@@ -1,6 +1,18 @@
 import { Input } from "@/components/ui/input";
+import Invested from "@/types/Invested";
+import React, { useMemo } from "react";
 
-function Balance() {
+interface BalanceProps {
+  invests: Invested[] | null;
+}
+
+function Balance({ invests }: BalanceProps) {
+  const totalInvested = useMemo(() => {
+    const inputs = invests?.map((invest) => invest.input);
+
+    return inputs?.reduce((l, r) => l + r, 0);
+  }, [invests]);
+
   return (
     <section className="bg-white lg:py-5 lg:px-3 rounded-lg lg:w-[340px]">
       <p>Balance</p>
@@ -16,12 +28,12 @@ function Balance() {
       </div>
       <p>Invested</p>
       <Input
-        className="text-white bg-black lg:h-14 lg:py-4 lg:px-5 lg:text-xl font-medium"
-        value="$7,532.21"
+        className="font-medium text-white bg-black lg:h-14 lg:py-4 lg:px-5 lg:text-xl"
+        value={totalInvested ?? 0}
         readOnly
       />
     </section>
   );
 }
 
-export default Balance;
+export default React.memo(Balance);

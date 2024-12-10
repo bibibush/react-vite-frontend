@@ -19,6 +19,7 @@ export type stockList =
 
 function Dashboard() {
   const topbarKeyword = useFoxStore((state) => state.topbarKeyword);
+  const invests = useFoxStore((state) => state.user.invests);
 
   const { data: stocks, isLoading } = useGetStocks();
 
@@ -59,7 +60,7 @@ function Dashboard() {
           onLeftLocation={handleSetLeftLocation}
           onRightLocation={handleSetRightLocation}
         />
-        <Balance />
+        <Balance invests={invests} />
       </main>
     </section>
   );
