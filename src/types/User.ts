@@ -1,3 +1,5 @@
+import Invested from "./Invested";
+
 export default interface User {
   id: number | null;
   isSuperuser: boolean;
@@ -7,4 +9,5 @@ export default interface User {
   email: string | null;
   isStaff: boolean;
   dateJoined: string | null;
+  invests: Invested[] | null;
 }
