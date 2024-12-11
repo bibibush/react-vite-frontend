@@ -1,12 +1,14 @@
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import Invested from "@/types/Invested";
 import React, { useMemo } from "react";
 
 interface BalanceProps {
   invests: Invested[] | null;
+  userId: number | null;
 }
 
-function Balance({ invests }: BalanceProps) {
+function Balance({ invests, userId }: BalanceProps) {
   const totalInvested = useMemo(() => {
     const totalInitialPrices = invests?.map(
       ({ input, initialPrice }) => input * initialPrice
@@ -41,12 +43,17 @@ function Balance({ invests }: BalanceProps) {
       <p>Balance</p>
       <div className="flex gap-2 mb-5">
         <Input
-          className="lg:py-4 lg:px-5 lg:w-[calc(100%-8px-63px)] lg:h-14 bg-[#6425FE] text-white font-medium lg:text-xl"
+          className={cn(
+            "lg:py-4 lg:px-5 lg:w-[calc(100%-8px-63px)] lg:h-14 bg-[#6425FE] text-white font-medium",
+            userId ? "lg:text-xl" : "lg:text-md"
+          )}
           value={
-            totalBalance?.toLocaleString("ko-KR", {
-              style: "currency",
-              currency: "KRW",
-            }) ?? 0
+            userId
+              ? totalBalance?.toLocaleString("ko-KR", {
+                  style: "currency",
+                  currency: "KRW",
+                }) ?? 0
+              : "로그인이 필요한 항목입니다."
           }
           readOnly
         />
@@ -56,12 +63,17 @@ function Balance({ invests }: BalanceProps) {
       </div>
       <p>Invested</p>
       <Input
-        className="font-medium text-white bg-black lg:h-14 lg:py-4 lg:px-5 lg:text-xl"
+        className={cn(
+          "font-medium text-white bg-black lg:h-14 lg:py-4 lg:px-5",
+          userId ? "lg:text-xl" : "lg:text-md"
+        )}
         value={
-          totalInvested?.toLocaleString("ko-KR", {
-            style: "currency",
-            currency: "KRW",
-          }) ?? 0
+          userId
+            ? totalInvested?.toLocaleString("ko-KR", {
+                style: "currency",
+                currency: "KRW",
+              }) ?? 0
+            : "로그인이 필요한 항목입니다."
         }
         readOnly
       />

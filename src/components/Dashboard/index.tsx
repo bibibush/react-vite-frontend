@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import Stocks from "./Stocks";
 import Balance from "./Balance";
 import { useFoxStore } from "@/zustand/store";
+import Markets from "./Markets";
 
 export type stockList =
   | Array<{
@@ -19,6 +20,7 @@ export type stockList =
 
 function Dashboard() {
   const topbarKeyword = useFoxStore((state) => state.topbarKeyword);
+  const userId = useFoxStore((state) => state.user.id);
   const invests = useFoxStore((state) => state.user.invests);
 
   const { data: stocks, isLoading } = useGetStocks();
@@ -60,7 +62,11 @@ function Dashboard() {
           onLeftLocation={handleSetLeftLocation}
           onRightLocation={handleSetRightLocation}
         />
-        <Balance invests={invests} />
+
+        <div className="flex gap-5">
+          <Balance invests={invests} userId={userId} />
+          <Markets />
+        </div>
       </main>
     </section>
   );
