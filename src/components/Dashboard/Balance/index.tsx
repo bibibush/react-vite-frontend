@@ -42,7 +42,12 @@ function Balance({ invests }: BalanceProps) {
       <div className="flex gap-2 mb-5">
         <Input
           className="lg:py-4 lg:px-5 lg:w-[calc(100%-8px-63px)] lg:h-14 bg-[#6425FE] text-white font-medium lg:text-xl"
-          value={totalBalance ?? 0}
+          value={
+            totalBalance?.toLocaleString("ko-KR", {
+              style: "currency",
+              currency: "KRW",
+            }) ?? 0
+          }
           readOnly
         />
         <div className="lg:p-[10px] bg-[#C7FFA5] rounded-lg flex justify-center items-center">
@@ -52,7 +57,12 @@ function Balance({ invests }: BalanceProps) {
       <p>Invested</p>
       <Input
         className="font-medium text-white bg-black lg:h-14 lg:py-4 lg:px-5 lg:text-xl"
-        value={totalInvested ?? 0}
+        value={
+          totalInvested?.toLocaleString("ko-KR", {
+            style: "currency",
+            currency: "KRW",
+          }) ?? 0
+        }
         readOnly
       />
     </section>
