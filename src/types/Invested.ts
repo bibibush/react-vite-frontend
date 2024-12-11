@@ -5,6 +5,5 @@ export default interface Invested {
   input: number;
   initialPrice: number;
   currentPrice: number;
-  totalPrice: number;
   company: Stock;
 }
