@@ -23,6 +23,19 @@ function Balance({ invests }: BalanceProps) {
     return currentTotalPrices?.reduce((l, r) => l + r, 0);
   }, [invests]);
 
+  const differenceRate = useMemo(() => {
+    const result = (totalBalance ?? 0) / (totalInvested ?? 0);
+    if (!result && result !== 0) {
+      return `0%`;
+    }
+
+    if (result < 0 || result === 0) {
+      return `${result.toFixed(2)}%`;
+    } else {
+      return `+${result.toFixed(2)}%`;
+    }
+  }, [totalBalance, totalInvested]);
+
   return (
     <section className="bg-white lg:py-5 lg:px-3 rounded-lg lg:w-[340px]">
       <p>Balance</p>
@@ -33,7 +46,7 @@ function Balance({ invests }: BalanceProps) {
           readOnly
         />
         <div className="lg:p-[10px] bg-[#C7FFA5] rounded-lg flex justify-center items-center">
-          5.63%
+          {differenceRate}
         </div>
       </div>
       <p>Invested</p>
