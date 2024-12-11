@@ -8,9 +8,19 @@ interface BalanceProps {
 
 function Balance({ invests }: BalanceProps) {
   const totalInvested = useMemo(() => {
-    const inputs = invests?.map((invest) => invest.input);
+    const totalInitialPrices = invests?.map(
+      ({ input, initialPrice }) => input * initialPrice
+    );
 
-    return inputs?.reduce((l, r) => l + r, 0);
+    return totalInitialPrices?.reduce((l, r) => l + r, 0);
+  }, [invests]);
+
+  const totalBalance = useMemo(() => {
+    const currentTotalPrices = invests?.map(
+      ({ input, currentPrice }) => input * currentPrice
+    );
+
+    return currentTotalPrices?.reduce((l, r) => l + r, 0);
   }, [invests]);
 
   return (
@@ -19,7 +29,7 @@ function Balance({ invests }: BalanceProps) {
       <div className="flex gap-2 mb-5">
         <Input
           className="lg:py-4 lg:px-5 lg:w-[calc(100%-8px-63px)] lg:h-14 bg-[#6425FE] text-white font-medium lg:text-xl"
-          value="$14,032.56"
+          value={totalBalance ?? 0}
           readOnly
         />
         <div className="lg:p-[10px] bg-[#C7FFA5] rounded-lg flex justify-center items-center">
