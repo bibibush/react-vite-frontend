@@ -112,7 +112,6 @@ function Markets() {
             }
           />
           <Area
-            type="monotone"
             dataKey="price"
             stroke="var(--color-day)"
             fill="var(--color-day)"
