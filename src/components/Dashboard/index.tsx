@@ -23,7 +23,7 @@ function Dashboard() {
   const userId = useFoxStore((state) => state.user.id);
   const invests = useFoxStore((state) => state.user.invests);
 
-  const { data: stocks, isLoading } = useGetStocks();
+  const { data: stocks, isLoading } = useGetStocks({ userId });
 
   const [boxLocation, setBoxLocation] = useState<number>(0);
 
