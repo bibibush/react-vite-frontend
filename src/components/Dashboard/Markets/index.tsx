@@ -105,7 +105,10 @@ function Markets() {
           />
           <ChartTooltip
             content={
-              <ChartTooltipContent labelFormatter={(label) => `${label}일`} />
+              <ChartTooltipContent
+                unit="원"
+                labelFormatter={(label) => `${label}일`}
+              />
             }
           />
           <Area
