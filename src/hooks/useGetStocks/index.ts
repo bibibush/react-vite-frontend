@@ -38,5 +38,6 @@ export default function useGetStocks(params: GetStocksParams) {
   return {
     ...results,
     data: results.data?.data,
+    invests: results.data?.invests,
   };
 }

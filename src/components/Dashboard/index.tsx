@@ -1,5 +1,5 @@
 import useGetStocks from "@/hooks/useGetStocks";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Stocks from "./Stocks";
 import Balance from "./Balance";
 import { useFoxStore } from "@/zustand/store";
@@ -22,8 +22,13 @@ function Dashboard() {
   const topbarKeyword = useFoxStore((state) => state.topbarKeyword);
   const userId = useFoxStore((state) => state.user.id);
   const invests = useFoxStore((state) => state.user.invests);
+  const setInvests = useFoxStore((state) => state.setInvests);
 
-  const { data: stocks, isLoading } = useGetStocks({ userId });
+  const {
+    data: stocks,
+    isLoading,
+    invests: investsData,
+  } = useGetStocks({ userId });
 
   const [boxLocation, setBoxLocation] = useState<number>(0);
 
@@ -50,6 +55,14 @@ function Dashboard() {
   const handleSetRightLocation = () => {
     setBoxLocation(boxLocation + 560);
   };
+
+  useEffect(() => {
+    if (!investsData?.length) {
+      return;
+    }
+
+    setInvests(investsData);
+  }, [investsData, setInvests]);
 
   return (
     <section className="overflow-hidden">

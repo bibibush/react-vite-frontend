@@ -1,5 +1,6 @@
 import { cookieService } from "@/lib/cookieService";
 import { tokenService } from "@/lib/tokenService";
+import Invested from "@/types/Invested";
 import User from "@/types/User";
 import { create } from "zustand";
 
@@ -14,6 +15,7 @@ interface Actions {
   onChangeKeyword: (value: string) => void;
   setUser: (user: User) => void;
   setUserId: (userId: string) => void;
+  setInvests: (invests: Array<Invested>) => void;
   onSignout: () => void;
 }
 
@@ -53,6 +55,10 @@ export const useFoxStore = create<Store & Actions>((set) => ({
   setUser: (user) =>
     set(() => {
       return { user };
+    }),
+  setInvests: (invests) =>
+    set((state) => {
+      return { user: { ...state.user, invests } };
     }),
   onSignout: () =>
     set(() => {
