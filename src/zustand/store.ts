@@ -53,8 +53,8 @@ export const useFoxStore = create<Store & Actions>((set) => ({
       return { user: { ...state.user, id: Number(userId) } };
     }),
   setUser: (user) =>
-    set(() => {
-      return { user };
+    set((state) => {
+      return { user: { ...user, invests: state.user.invests } };
     }),
   setInvests: (invests) =>
     set((state) => {
