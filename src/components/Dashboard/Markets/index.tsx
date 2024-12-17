@@ -1,13 +1,8 @@
+import SimpleAreaChart from "@/components/charts/SimpleAreaChart";
 import { Badge } from "@/components/ui/badge";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 function Markets() {
   const [chartFrequency, setFrequency] = useState<string>("1D");
@@ -89,35 +84,14 @@ function Markets() {
           )
         )}
       </div>
-      <ChartContainer config={chartConfig} className="w-full">
-        <AreaChart accessibilityLayer data={garaData}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            dataKey="day"
-            tickLine={false}
-            tickMargin={10}
-            minTickGap={20}
-          />
-          <YAxis
-            tickLine={false}
-            domain={["dataMin-1000", "dataMax+1000"]}
-            tickFormatter={(value) => `${value.toLocaleString()}원`}
-          />
-          <ChartTooltip
-            content={
-              <ChartTooltipContent
-                unit="원"
-                labelFormatter={(label) => `${label}일`}
-              />
-            }
-          />
-          <Area
-            dataKey="price"
-            stroke="var(--color-day)"
-            fill="var(--color-day)"
-          />
-        </AreaChart>
-      </ChartContainer>
+      <SimpleAreaChart
+        data={garaData}
+        dataKey="price"
+        XdataKey="day"
+        chartConfig={chartConfig}
+        unit="원"
+        labelUnit="일"
+      />
     </section>
   );
 }
