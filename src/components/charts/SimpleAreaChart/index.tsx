@@ -4,13 +4,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { GetChartDataResponse } from "@/hooks/useGetChartData";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { DataKey } from "recharts/types/util/types";
 
 interface SimpleAreaChartProps {
   chartConfig: ChartConfig;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Array<any>;
+  data: Array<GetChartDataResponse>;
   XdataKey: DataKey<string>;
   dataKey: DataKey<string>;
   unit?: string;

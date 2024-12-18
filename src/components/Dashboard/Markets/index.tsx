@@ -1,42 +1,30 @@
 import SimpleAreaChart from "@/components/charts/SimpleAreaChart";
 import { Badge } from "@/components/ui/badge";
 import { ChartConfig } from "@/components/ui/chart";
+import UseGetChartData from "@/hooks/useGetChartData";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 function Markets() {
-  const [chartFrequency, setFrequency] = useState<string>("1D");
-  const chartFrequencyList = ["1D", "1W", "1M", "1Y"];
+  const [chartFrequency, setFrequency] = useState<string>("D");
+  const chartFrequencyList = ["D", "W", "M", "Y"];
+  const unitResult = useMemo(() => {
+    switch (chartFrequency) {
+      case "D":
+        return { XdataKey: "day", labelUnit: "일" };
+      case "W":
+        return { XdataKey: "week", labelUnit: "주" };
+      case "M":
+        return { XdataKey: "month", labelUnit: "월" };
+      case "Y":
+        return { XdataKey: "year", labelUnit: "년" };
+    }
+  }, [chartFrequency]);
 
   const COMMON_CLASSES = "flex-1 text-center border-0 cursor-pointer";
 
-  const garaData = [
-    { day: "1", price: 53800 },
-    { day: "2", price: 53300 },
-    { day: "3", price: 53200 },
-    { day: "4", price: 54000 },
-    { day: "5", price: 53800 },
-    { day: "6", price: 53900 },
-    { day: "7", price: 53600 },
-    { day: "8", price: 54100 },
-    { day: "9", price: 54000 },
-    { day: "10", price: 53700 },
-    { day: "11", price: 53800 },
-    { day: "12", price: 53600 },
-    { day: "13", price: 54100 },
-    { day: "14", price: 53700 },
-    { day: "15", price: 53800 },
-    { day: "16", price: 53000 },
-    { day: "17", price: 52800 },
-    { day: "18", price: 53500 },
-    { day: "19", price: 53400 },
-    { day: "20", price: 53900 },
-    { day: "21", price: 54100 },
-    { day: "22", price: 54000 },
-    { day: "23", price: 53600 },
-    { day: "24", price: 53000 },
-    { day: "25", price: 53500 },
-  ];
+  const { data: chartData } = UseGetChartData({ frequency: chartFrequency });
+
   const chartConfig: ChartConfig = {
     day: {
       label: "day",
@@ -85,12 +73,12 @@ function Markets() {
         )}
       </div>
       <SimpleAreaChart
-        data={garaData}
+        data={chartData ?? []}
         dataKey="price"
-        XdataKey="day"
+        XdataKey={unitResult?.XdataKey ?? "day"}
         chartConfig={chartConfig}
         unit="원"
-        labelUnit="일"
+        labelUnit={unitResult?.labelUnit}
       />
     </section>
   );
