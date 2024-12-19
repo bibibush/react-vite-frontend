@@ -87,8 +87,9 @@ function Dashboard() {
         <div className="flex gap-5">
           <Balance invests={invests} userId={userId} />
           <Markets />
-          <Trends />
         </div>
+
+        <Trends />
       </main>
     </section>
   );
