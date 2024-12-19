@@ -1,6 +1,6 @@
 import requestAPI from "@/api";
 import User from "@/types/User";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 async function getMyProfileAPI(params: { userId: string | null }) {
   try {
@@ -15,11 +15,14 @@ async function getMyProfileAPI(params: { userId: string | null }) {
   }
 }
 
-export default function useGetMyProfile(params: { userId: string | null }) {
+export default function useGetMyProfile(
+  params: { userId: string | null },
+  options?: Omit<UseQueryOptions<User>, "queryKey">
+) {
   const results = useQuery<User>({
     queryKey: ["user", params.userId],
     queryFn: () => getMyProfileAPI(params),
-    enabled: !!params.userId,
+    ...options,
   });
 
   return {

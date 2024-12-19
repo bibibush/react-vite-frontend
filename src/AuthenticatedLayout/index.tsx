@@ -12,9 +12,14 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
     useFoxStore((state) => state);
   const userId = useFoxStore((state) => state.user.id);
 
-  const { data: myUserData } = useGetMyProfile({
-    userId: userId ? String(userId) : null,
-  });
+  const { data: myUserData } = useGetMyProfile(
+    {
+      userId: userId ? String(userId) : null,
+    },
+    {
+      enabled: !!userId,
+    }
+  );
 
   const handleGetCSRF = async () => {
     try {

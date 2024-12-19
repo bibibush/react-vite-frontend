@@ -1,8 +1,10 @@
 import SimpleAreaChart from "@/components/charts/SimpleAreaChart";
 import { Badge } from "@/components/ui/badge";
 import { ChartConfig } from "@/components/ui/chart";
+import { Skeleton } from "@/components/ui/skeleton";
 import UseGetChartData from "@/hooks/useGetChartData";
 import { cn } from "@/lib/utils";
+import { keepPreviousData } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 
 function Markets() {
@@ -23,7 +25,15 @@ function Markets() {
 
   const COMMON_CLASSES = "flex-1 text-center border-0 cursor-pointer";
 
-  const { data: chartData } = UseGetChartData({ frequency: chartFrequency });
+  const { data: chartData, isLoading: isChartDataLoading } = UseGetChartData(
+    { frequency: chartFrequency },
+    {
+      enabled: !!chartFrequency,
+      placeholderData: keepPreviousData,
+      staleTime: 60 * 1000 * 10,
+      gcTime: 60 * 1000 * 11,
+    }
+  );
 
   const chartConfig: ChartConfig = {
     day: {
@@ -72,14 +82,18 @@ function Markets() {
           )
         )}
       </div>
-      <SimpleAreaChart
-        data={chartData ?? []}
-        dataKey="price"
-        XdataKey={unitResult?.XdataKey ?? "day"}
-        chartConfig={chartConfig}
-        unit="원"
-        labelUnit={unitResult?.labelUnit}
-      />
+      {isChartDataLoading ? (
+        <Skeleton className="h-[200px]" />
+      ) : (
+        <SimpleAreaChart
+          data={chartData ?? []}
+          dataKey="price"
+          XdataKey={unitResult?.XdataKey ?? "day"}
+          chartConfig={chartConfig}
+          unit="원"
+          labelUnit={unitResult?.labelUnit}
+        />
+      )}
     </section>
   );
 }

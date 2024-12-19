@@ -4,6 +4,7 @@ import Stocks from "./Stocks";
 import Balance from "./Balance";
 import { useFoxStore } from "@/zustand/store";
 import Markets from "./Markets";
+import { keepPreviousData } from "@tanstack/react-query";
 
 export type stockList =
   | Array<{
@@ -28,7 +29,13 @@ function Dashboard() {
     data: stocks,
     isLoading,
     invests: investsData,
-  } = useGetStocks({ userId });
+  } = useGetStocks(
+    { userId },
+    {
+      placeholderData: keepPreviousData,
+      refetchInterval: 60 * 1000,
+    }
+  );
 
   const [boxLocation, setBoxLocation] = useState<number>(0);
 

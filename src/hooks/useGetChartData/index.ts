@@ -1,5 +1,5 @@
 import requestAPI from "@/api";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 interface GetChartDataParams {
   frequency: string;
@@ -29,14 +29,14 @@ async function getChartDataAPI(params: GetChartDataParams) {
   }
 }
 
-function UseGetChartData(params: GetChartDataParams) {
+function UseGetChartData(
+  params: GetChartDataParams,
+  options?: Omit<UseQueryOptions<GetChartDataResponse[]>, "queryKey">
+) {
   const results = useQuery<GetChartDataResponse[]>({
     queryKey: ["charts", params.frequency],
     queryFn: () => getChartDataAPI(params),
-    enabled: !!params.frequency,
-    placeholderData: keepPreviousData,
-    staleTime: 60 * 1000 * 10,
-    gcTime: 60 * 1000 * 11,
+    ...options,
   });
 
   return {

@@ -1,7 +1,7 @@
 import requestAPI from "@/api";
 import Invested from "@/types/Invested";
 import Stock from "@/types/Stock";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 interface GetStocksResponse {
   data: Array<Stock>;
@@ -27,12 +27,14 @@ async function getStocksAPI(params: GetStocksParams) {
   }
 }
 
-export default function useGetStocks(params: GetStocksParams) {
+export default function useGetStocks(
+  params: GetStocksParams,
+  options?: Omit<UseQueryOptions<GetStocksResponse>, "queryKey">
+) {
   const results = useQuery<GetStocksResponse>({
     queryKey: ["stocks", params.userId],
     queryFn: () => getStocksAPI(params),
-    placeholderData: keepPreviousData,
-    refetchInterval: 60 * 1000,
+    ...options,
   });
 
   return {
