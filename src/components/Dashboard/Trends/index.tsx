@@ -105,9 +105,25 @@ function Trends() {
     {
       accessorKey: "fromYesterday",
       header: "전일비",
+      cell: ({ row, column }) => {
+        const colorValue = row.getValue("differntPercent") as string;
+        const value = colorValue.trim();
+        if (value.startsWith("+")) {
+          return (
+            <span className="text-red-500">{row.getValue(column.id)}</span>
+          );
+        } else if (value.startsWith("-")) {
+          return (
+            <span className="text-blue-500">{row.getValue(column.id)}</span>
+          );
+        } else {
+          return row.getValue(column.id);
+        }
+      },
     },
     {
-      accessorKey: "increasedPercent",
+      accessorKey: "differntPercent",
+      id: "differntPercent",
       header: "등락률",
       cell: ({ row, column }) => {
         const value = row.getValue(column.id) as string;
