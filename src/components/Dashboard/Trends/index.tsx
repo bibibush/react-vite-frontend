@@ -109,6 +109,23 @@ function Trends() {
     {
       accessorKey: "increasedPercent",
       header: "등락률",
+      cell: ({ row, column }) => {
+        const value = row.getValue(column.id) as string;
+        console.log(value);
+        return (
+          <span
+            className={cn(
+              value.trim().startsWith("+")
+                ? "text-red-500"
+                : value.trim().startsWith("-")
+                ? "text-blue-500"
+                : null
+            )}
+          >
+            {value.trim()}
+          </span>
+        );
+      },
     },
     ...camelColumnsNameList,
   ];
