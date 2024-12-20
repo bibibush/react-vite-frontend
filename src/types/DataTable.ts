@@ -3,5 +3,8 @@ export default interface DataTable {
   currentPrice: string;
   fromYesterday: string;
   increasedPercent: string;
-  [key: string]: string;
+  tradingVolume?: string;
+  marketPrice?: string;
+  highestPrice?: string;
+  lowestPrice?: string;
 }
