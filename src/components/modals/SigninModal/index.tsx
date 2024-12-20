@@ -75,7 +75,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
               className="flex flex-col items-center gap-5 mt-10"
               onSubmit={methods.handleSubmit(handleSignin)}
             >
-              <CustomInputForm<AuthenticateFormParams>
+              <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="userEmail"
@@ -93,7 +93,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
                 }}
                 placeholder="이메일을 입력해주세요."
               />
-              <CustomInputForm<AuthenticateFormParams>
+              <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="password"

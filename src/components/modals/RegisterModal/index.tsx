@@ -66,7 +66,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
               className="flex flex-col items-center gap-5 mt-10"
               onSubmit={methods.handleSubmit(handleRegister)}
             >
-              <CustomInputForm<RegisterFormParams>
+              <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="email"
@@ -84,7 +84,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 }}
                 placeholder="이메일을 입력해주세요."
               />
-              <CustomInputForm<RegisterFormParams>
+              <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
                 name="username"

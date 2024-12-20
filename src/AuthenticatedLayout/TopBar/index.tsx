@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import LogoutIcon from "@/components/menuIcons/LogoutIcon";
+import { BiBook } from "react-icons/bi";
 import { useFoxStore } from "@/zustand/store";
 import { Fragment, useState } from "react";
 import SigninModal from "@/components/modals/SigninModal";
@@ -55,24 +56,30 @@ function TopBar() {
             <PopoverContent className="w-[180px]">
               <div className="flex flex-col gap-2">
                 {isSignedIn ? (
-                  <span
-                    className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
-                    onClick={onSignout}
-                  >
-                    <LogoutIcon color="#84828A" />
-                    Logout
-                  </span>
+                  <Fragment>
+                    <span className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100">
+                      <BiBook size={24} color="#84828A" />
+                      MyProfile
+                    </span>
+                    <span
+                      className="flex gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100"
+                      onClick={onSignout}
+                    >
+                      <LogoutIcon color="#84828A" />
+                      Logout
+                    </span>
+                  </Fragment>
                 ) : (
                   <Fragment>
                     <span
-                      className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+                      className="flex gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100"
                       onClick={handleOpenSigninModal}
                     >
                       <LogoutIcon color="#84828A" />
                       Login
                     </span>
                     <span
-                      className="flex gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+                      className="flex gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100"
                       onClick={handleOpenRegisterModal}
                     >
                       <LogoutIcon color="#84828A" />
