@@ -106,7 +106,7 @@ function Trends() {
       accessorKey: "fromYesterday",
       header: "전일비",
       cell: ({ row, column }) => {
-        const colorValue = row.getValue("differntPercent") as string;
+        const colorValue = row.getValue("differentPercent") as string;
         const value = colorValue.trim();
         if (value.startsWith("+")) {
           return (
@@ -122,8 +122,8 @@ function Trends() {
       },
     },
     {
-      accessorKey: "differntPercent",
-      id: "differntPercent",
+      accessorKey: "differentPercent",
+      id: "differentPercent",
       header: "등락률",
       cell: ({ row, column }) => {
         const value = row.getValue(column.id) as string;

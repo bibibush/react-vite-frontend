@@ -2,7 +2,7 @@ const DataTable = {
   name: "종목명",
   currentPrice: "현재가",
   fromYesterday: "전일비",
-  differntPercent: "등락률",
+  differentPercent: "등락률",
   tradingVolume: "거래량",
   marketPrice: "시가",
   highestPrice: "고가",
