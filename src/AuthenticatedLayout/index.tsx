@@ -88,7 +88,7 @@ function AuthenticatedLayout({ children }: { children: React.ReactNode }) {
   }, [myUserData, setUser]);
 
   return (
-    <section className="flex bg-[#F7F6F9] lg:h-[1200px]">
+    <section className="flex bg-[#F7F6F9] lg:min-h-[1200px]">
       <SideBar />
       <div className="flex flex-col w-full">
         <TopBar />

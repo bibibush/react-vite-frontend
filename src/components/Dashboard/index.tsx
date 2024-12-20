@@ -5,6 +5,7 @@ import Balance from "./Balance";
 import { useFoxStore } from "@/zustand/store";
 import Markets from "./Markets";
 import { keepPreviousData } from "@tanstack/react-query";
+import Trends from "./Trends";
 
 export type stockList =
   | Array<{
@@ -87,6 +88,8 @@ function Dashboard() {
           <Balance invests={invests} userId={userId} />
           <Markets />
         </div>
+
+        <Trends />
       </main>
     </section>
   );

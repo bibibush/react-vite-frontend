@@ -26,7 +26,7 @@ function SimpleAreaChart({
   labelUnit,
 }: SimpleAreaChartProps) {
   return (
-    <ChartContainer config={chartConfig} className="w-full">
+    <ChartContainer config={chartConfig} className="w-full h-[75%]">
       <AreaChart accessibilityLayer data={data}>
         <CartesianGrid vertical={false} />
         <XAxis

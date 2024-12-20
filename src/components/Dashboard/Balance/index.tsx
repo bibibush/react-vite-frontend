@@ -39,7 +39,7 @@ function Balance({ invests, userId }: BalanceProps) {
   }, [totalBalance, totalInvested]);
 
   return (
-    <section className="bg-white lg:py-5 lg:px-3 rounded-lg lg:w-[340px]">
+    <section className="bg-white lg:py-5 lg:px-3 rounded-lg lg:w-[490px]">
       <p>Balance</p>
       <div className="flex gap-2 mb-5">
         <Input

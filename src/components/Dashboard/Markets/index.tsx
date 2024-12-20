@@ -47,7 +47,7 @@ function Markets() {
   };
 
   return (
-    <section className="bg-white rounded-lg lg:py-5 lg:px-3 lg:w-[410px] flex flex-col gap-4">
+    <section className="flex flex-col flex-1 lg:h-[300px] gap-4 bg-white rounded-lg lg:py-5 lg:px-3">
       <div className="flex items-center gap-3">
         <Badge
           className="text-xs font-medium p-[6px] rounded-lg cursor-pointer"
