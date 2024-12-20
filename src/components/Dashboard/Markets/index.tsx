@@ -56,7 +56,7 @@ function Markets() {
           국내증시
         </Badge>
       </div>
-      <div className="flex w-full">
+      <div className="flex">
         {chartFrequencyList.map((frq, index) =>
           index === chartFrequencyList.length - 1 ? (
             <span

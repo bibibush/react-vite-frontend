@@ -3,7 +3,7 @@ import DataTable from "@/types/DataTable";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 interface GetDataTableResponse {
-  data: Array<DataTable>;
+  data: Array<typeof DataTable>;
   totalCount: number;
 }
 interface GetDataTableParams {
