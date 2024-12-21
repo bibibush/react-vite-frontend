@@ -24,7 +24,7 @@ async function changeUserAPI(data: ChangeUserData) {
       method: "PUT",
       data: formdata,
       withJWT: true,
-      headers: { User_id: data.userId },
+      headers: { "user-id": data.userId },
     });
 
     return res.data;
