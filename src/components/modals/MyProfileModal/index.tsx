@@ -1,26 +1,36 @@
 import SigninMarks from "@/components/SigninMarks";
-import SkyBalloon from "@/assets/skyballoon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import CustomInputForm from "@/components/forms/CustomInputForm";
+import SkyBalloon from "@/assets/skyballoon.png";
 import { Form } from "@/components/ui/form";
+import CustomInputForm from "@/components/forms/CustomInputForm";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { useForm } from "react-hook-form";
+import ChangeUser from "@/types/ChangeUser";
+import { useFoxStore } from "@/zustand/store";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useChangeUser from "@/hooks/useChangeUser";
+import { Badge } from "@/components/ui/badge";
 
-interface RegisterModalProps {
+interface MyProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface RegisterFormParams {
-  email: string;
-  username: string;
-  password1: string;
-  password2: string;
-}
+function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
+  const {
+    email,
+    username,
+    profileImg,
+    id: userId,
+  } = useFoxStore((state) => state.user);
 
-function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
-  const methods = useForm<RegisterFormParams>({
+  const [selectedImg, setSelectedImg] = useState<File | null>(null);
+  const [selectedImgURL, setSelectedImgURL] = useState<string | null>(null);
+
+  const profileInputRef = useRef<HTMLInputElement>(null);
+
+  const methods = useForm<ChangeUser>({
     defaultValues: {
       email: "",
       username: "",
@@ -29,19 +39,64 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     },
   });
 
-  const handleRegister = async (data: RegisterFormParams) => {
-    const formData = new FormData();
-    for (const [key, value] of Object.entries(data)) {
-      formData.append(key, value);
+  const { mutate: changeUser } = useChangeUser();
+
+  const handleChangeProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
     }
-    try {
-      await axios.post("/api/users/create/", formData);
-      onClose();
-      methods.reset();
-    } catch (e) {
-      console.error(e);
-    }
+
+    setSelectedImg(file);
+
+    e.target.value = "";
   };
+
+  const handleResetImg = () => {
+    setSelectedImg(new File([], ""));
+    setSelectedImgURL(null);
+  };
+
+  const handleSubmitChangedUserInfo = useCallback(
+    (data: ChangeUser) => {
+      if (!userId) {
+        return;
+      }
+
+      changeUser({
+        email: data.email,
+        username: data.username,
+        userId,
+        password1: data.password1 || undefined,
+        password2: data.password2 || undefined,
+        profile_img: selectedImg,
+      });
+    },
+    [userId, selectedImg, changeUser]
+  );
+
+  useEffect(() => {
+    if (!email || !username) {
+      return;
+    }
+
+    methods.reset({
+      email,
+      username,
+    });
+    setSelectedImgURL(profileImg);
+  }, [email, username, methods, profileImg]);
+
+  useEffect(() => {
+    if (!selectedImg) {
+      return;
+    }
+
+    const convertedURL = URL.createObjectURL(selectedImg);
+    setSelectedImgURL(convertedURL);
+
+    return () => URL.revokeObjectURL(convertedURL);
+  }, [selectedImg]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -59,13 +114,34 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         />
         <section className="absolute lg:w-[65%] min-h-full top-0 right-0 rounded-l-lg bg-white p-11">
           <p className="text-2xl font-semibold text-center mt-14">
-            Sign up with your Email
+            Change your User Info
           </p>
           <Form {...methods}>
             <form
-              className="flex flex-col items-center gap-5 mt-10"
-              onSubmit={methods.handleSubmit(handleRegister)}
+              className="relative flex flex-col items-center gap-5 mt-10"
+              onSubmit={methods.handleSubmit(handleSubmitChangedUserInfo)}
             >
+              <Avatar
+                className="cursor-pointer size-36"
+                onClick={() => profileInputRef.current?.click()}
+              >
+                <AvatarImage src={selectedImgURL ?? ""} />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+              <Badge
+                className="absolute top-32 right-32"
+                onClick={handleResetImg}
+              >
+                X
+              </Badge>
+              <input
+                type="file"
+                accept="image/jpg, image/jpeg, image/png"
+                ref={profileInputRef}
+                hidden
+                onChange={handleChangeProfileImg}
+              />
+
               <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
@@ -103,10 +179,6 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 name="password1"
                 label="password"
                 rules={{
-                  required: {
-                    value: true,
-                    message: "비밀번호는 필수입력항목입니다.",
-                  },
                   pattern: {
                     value:
                       /^(?=(.*[a-zA-Z]))(?=(.*\d))(?=(.*[\W_]))[a-zA-Z0-9\W_]{8,}$/,
@@ -123,10 +195,6 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 name="password2"
                 label="check password"
                 rules={{
-                  required: {
-                    value: true,
-                    message: "비밀번호는 필수입력항목입니다.",
-                  },
                   validate: {
                     isSame: (value) =>
                       value === methods.getValues("password1") ||
@@ -137,7 +205,7 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 isPassword
               />
               <Button className="bg-[#F9ED32] 3xl:w-[340px] 3xl:h-[45px] text-black hover:bg-[#f9ec32a6] 3xl:text-xl font-normal">
-                Sign up
+                Submit
               </Button>
             </form>
           </Form>
@@ -147,4 +215,4 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   );
 }
 
-export default RegisterModal;
+export default MyProfileModal;

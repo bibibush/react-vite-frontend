@@ -30,6 +30,7 @@ const initialState: Store = {
     isStaff: false,
     dateJoined: null,
     invests: null,
+    profileImg: null,
   },
   accessToken: null,
   isSignedIn: false,

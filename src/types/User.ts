@@ -10,4 +10,5 @@ export default interface User {
   isStaff: boolean;
   dateJoined: string | null;
   invests: Invested[] | null;
+  profileImg: string | null;
 }

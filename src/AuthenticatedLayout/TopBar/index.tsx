@@ -12,6 +12,7 @@ import { useFoxStore } from "@/zustand/store";
 import { Fragment, useState } from "react";
 import SigninModal from "@/components/modals/SigninModal";
 import RegisterModal from "@/components/modals/RegisterModal";
+import MyProfileModal from "@/components/modals/MyProfileModal";
 
 function TopBar() {
   const isSignedIn = useFoxStore((state) => state.isSignedIn);
@@ -20,6 +21,8 @@ function TopBar() {
 
   const [isOpenSigninModal, setIsOpenSigninModal] = useState<boolean>(false);
   const [isOpenRegisterModal, setIsOpenRegisterModal] =
+    useState<boolean>(false);
+  const [isOpenMyProfileModal, setIsOpenMyProfileModal] =
     useState<boolean>(false);
 
   const handleOpenSigninModal = () => {
@@ -34,6 +37,13 @@ function TopBar() {
   };
   const handleCloseRegisterModal = () => {
     setIsOpenRegisterModal(false);
+  };
+
+  const handleOpenMyProfileModal = () => {
+    setIsOpenMyProfileModal(true);
+  };
+  const handleCloseMyProfileModal = () => {
+    setIsOpenMyProfileModal(false);
   };
 
   return (
@@ -57,7 +67,10 @@ function TopBar() {
               <div className="flex flex-col gap-2">
                 {isSignedIn ? (
                   <Fragment>
-                    <span className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100">
+                    <span
+                      className="flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100"
+                      onClick={handleOpenMyProfileModal}
+                    >
                       <BiBook size={24} color="#84828A" />
                       MyProfile
                     </span>
@@ -102,6 +115,12 @@ function TopBar() {
         <RegisterModal
           isOpen={isOpenRegisterModal}
           onClose={handleCloseRegisterModal}
+        />
+      )}
+      {isOpenMyProfileModal && (
+        <MyProfileModal
+          isOpen={isOpenMyProfileModal}
+          onClose={handleCloseMyProfileModal}
         />
       )}
     </header>

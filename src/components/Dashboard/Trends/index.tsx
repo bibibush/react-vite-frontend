@@ -127,7 +127,6 @@ function Trends() {
       header: "등락률",
       cell: ({ row, column }) => {
         const value = row.getValue(column.id) as string;
-        console.log(value);
         return (
           <span
             className={cn(
