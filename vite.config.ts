@@ -11,13 +11,9 @@ export default defineConfig({
     },
   },
   server: {
+    port: 5173,
     proxy: {
       "/api": {
-        // target: "http://localhost:8000",
-        target: "https://foxstocks.site",
-        secure: false,
-      },
-      "/media": {
         // target: "http://localhost:8000",
         target: "https://foxstocks.site",
         secure: false,
