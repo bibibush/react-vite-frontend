@@ -19,7 +19,6 @@ interface MyProfileModalProps {
 
 function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
   const {
-    email,
     username,
     profileImg,
     id: userId,
@@ -32,7 +31,6 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
 
   const methods = useForm<ChangeUser>({
     defaultValues: {
-      email: "",
       username: "",
       password1: "",
       password2: "",
@@ -64,7 +62,6 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
       }
 
       changeUser({
-        email: data.email,
         username: data.username,
         userId,
         password1: data.password1 || undefined,
@@ -76,16 +73,15 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
   );
 
   useEffect(() => {
-    if (!email || !username) {
+    if (!username) {
       return;
     }
 
     methods.reset({
-      email,
       username,
     });
     setSelectedImgURL(profileImg);
-  }, [email, username, methods, profileImg]);
+  }, [username, methods, profileImg]);
 
   useEffect(() => {
     if (!selectedImg) {
@@ -145,24 +141,6 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
               <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
-                name="email"
-                label="email"
-                rules={{
-                  required: {
-                    value: true,
-                    message: "이메일은 필수입력항목입니다.",
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message:
-                      "이메일 형식이 아닙니다. 이메일 형식으로 입력해주세요.",
-                  },
-                }}
-                placeholder="이메일을 입력해주세요."
-              />
-              <CustomInputForm
-                className="w-[400px] bg-[#B0BAC366]"
-                control={methods.control}
                 name="username"
                 label="user name"
                 rules={{
@@ -176,8 +154,24 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
               <CustomInputForm
                 className="w-[400px] bg-[#B0BAC366]"
                 control={methods.control}
+                rules={{
+                  validate: {
+                    isPassword2: (value) =>
+                      !value &&
+                      methods.getValues("password2") &&
+                      "비밀번호를 변경하고 싶으시면, 현재 비밀번호를 입력하세여 합니다.",
+                  },
+                }}
                 name="password1"
-                label="password"
+                label="current password"
+                placeholder="비밀번호를 변경하고 싶으시면, 현재 비밀번호를 입력해주세요."
+                isPassword
+              />
+              <CustomInputForm
+                className="w-[400px] bg-[#B0BAC366]"
+                control={methods.control}
+                name="password2"
+                label="new password"
                 rules={{
                   pattern: {
                     value:
@@ -186,22 +180,7 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
                       "비밀번호는 하나 이상의 영문자, 숫자,특수기호가 들어간 8자리 이상이여야 합니다.",
                   },
                 }}
-                placeholder="비밀번호를 입력해주세요."
-                isPassword
-              />
-              <CustomInputForm
-                className="w-[400px] bg-[#B0BAC366]"
-                control={methods.control}
-                name="password2"
-                label="check password"
-                rules={{
-                  validate: {
-                    isSame: (value) =>
-                      value === methods.getValues("password1") ||
-                      "비밀번호가 맞지 않습니다.",
-                  },
-                }}
-                placeholder="같은 비밀번호를 입력해주세요."
+                placeholder="비밀번호를 변경하고 싶으시면, 새로운 비밀번호를 입력해주세요."
                 isPassword
               />
               <Button className="bg-[#F9ED32] 3xl:w-[340px] 3xl:h-[45px] text-black hover:bg-[#f9ec32a6] 3xl:text-xl font-normal">

@@ -3,7 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 
 interface ChangeUserData {
   userId: number;
-  email: string;
   username: string;
   password1?: string;
   password2?: string;
@@ -24,7 +23,6 @@ async function changeUserAPI(data: ChangeUserData) {
       method: "PUT",
       data: formdata,
       withJWT: true,
-      headers: { "user-id": data.userId },
     });
 
     return res.data;
