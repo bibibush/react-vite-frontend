@@ -60,6 +60,7 @@ function Markets() {
         {chartFrequencyList.map((frq, index) =>
           index === chartFrequencyList.length - 1 ? (
             <span
+              key={frq}
               className={cn(
                 COMMON_CLASSES,
                 chartFrequency === frq && "text-primary-purple-500"
@@ -70,6 +71,7 @@ function Markets() {
             </span>
           ) : (
             <span
+              key={frq}
               className={cn(
                 COMMON_CLASSES,
                 "border-r",
