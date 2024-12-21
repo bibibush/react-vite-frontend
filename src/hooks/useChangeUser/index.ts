@@ -6,7 +6,7 @@ interface ChangeUserData {
   username: string;
   password1?: string;
   password2?: string;
-  profile_img: File | null;
+  profile_img?: File;
 }
 
 async function changeUserAPI(data: ChangeUserData) {

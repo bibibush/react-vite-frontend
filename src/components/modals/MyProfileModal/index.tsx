@@ -61,12 +61,22 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const extraData: any = {};
+      if (selectedImg) {
+        extraData["profile_img"] = selectedImg;
+      }
+      if (data.password1) {
+        extraData["password1"] = data.password1;
+      }
+      if (data.password2) {
+        extraData["password2"] = data.password2;
+      }
+
       changeUser({
         username: data.username,
         userId,
-        password1: data.password1 || undefined,
-        password2: data.password2 || undefined,
-        profile_img: selectedImg,
+        ...extraData,
       });
     },
     [userId, selectedImg, changeUser]
@@ -156,10 +166,11 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
                 control={methods.control}
                 rules={{
                   validate: {
-                    isPassword2: (value) =>
-                      !value &&
-                      methods.getValues("password2") &&
-                      "비밀번호를 변경하고 싶으시면, 현재 비밀번호를 입력하세여 합니다.",
+                    isPassword2: (value) => {
+                      if (!value && methods.getValues("password2")) {
+                        return "비밀번호를 변경하고 싶으시면, 현재 비밀번호를 입력해주세요.";
+                      }
+                    },
                   },
                 }}
                 name="password1"
