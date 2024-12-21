@@ -17,6 +17,7 @@ import MyProfileModal from "@/components/modals/MyProfileModal";
 function TopBar() {
   const isSignedIn = useFoxStore((state) => state.isSignedIn);
   const username = useFoxStore((state) => state.user.username);
+  const profileImg = useFoxStore((state) => state.user.profileImg);
   const onSignout = useFoxStore((state) => state.onSignout);
 
   const [isOpenSigninModal, setIsOpenSigninModal] = useState<boolean>(false);
@@ -60,7 +61,7 @@ function TopBar() {
             <PopoverTrigger>
               <Avatar>
                 <AvatarFallback>U</AvatarFallback>
-                <AvatarImage alt="U" />
+                <AvatarImage src={profileImg ?? ""} alt="U" />
               </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-[180px]">
