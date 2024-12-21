@@ -64,15 +64,15 @@ export default function requestAPI({
   }
 
   return axios
-    .request(
-      fromCamelToSnake({
-        headers,
+    .request({
+      headers,
+      ...fromCamelToSnake({
         url,
         method,
         params,
         ...config,
-      })
-    )
+      }),
+    })
     .then((response) => Promise.resolve(fromSnakeToCamel(response)))
     .catch((error) => Promise.reject(error));
 }
