@@ -15,9 +15,6 @@ async function changeUserAPI(data: ChangeUserData) {
     const formdata = new FormData();
     for (const [key, value] of Object.entries(data)) {
       if (key !== "userId") {
-        if (key === "profile_img") {
-          formdata.append(key, value, encodeURIComponent(value.name));
-        }
         formdata.append(key, value);
       }
     }
