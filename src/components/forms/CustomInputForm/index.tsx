@@ -40,7 +40,6 @@ function CustomInputForm<T extends FieldValues>({
               type={isPassword ? "password" : "text"}
               className={className}
               placeholder={placeholder}
-              autoComplete="off"
               {...field}
             />
           </FormControl>

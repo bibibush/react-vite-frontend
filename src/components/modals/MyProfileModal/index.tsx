@@ -109,6 +109,7 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
       <DialogContent
         className="bg-blue-100 border-0 lg:min-w-[830px] lg:min-h-[630px] 3xl:min-w-[1024px] 3xl:min-h-[735px] overflow-auto"
         onPointerDownOutside={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogTitle hidden />
 
