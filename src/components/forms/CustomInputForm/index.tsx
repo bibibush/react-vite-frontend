@@ -28,7 +28,7 @@ function CustomInputForm<T extends FieldValues>({
   placeholder,
   isPassword,
 }: CustomInputFormProps<T>) {
-  const customInput = useRef<HTMLInputElement>();
+  const customInput = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setTimeout(() => {
@@ -53,9 +53,7 @@ function CustomInputForm<T extends FieldValues>({
               placeholder={placeholder}
               ref={(e) => {
                 field.ref(e);
-                if (e) {
-                  customInput.current = e;
-                }
+                customInput.current = e;
               }}
             />
           </FormControl>
