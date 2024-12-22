@@ -87,9 +87,11 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
       return;
     }
 
-    methods.reset({
-      username,
-    });
+    setTimeout(() => {
+      methods.reset({
+        username,
+      });
+    }, 10);
     setSelectedImgURL(profileImg);
   }, [username, methods, profileImg]);
 
@@ -109,7 +111,6 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
       <DialogContent
         className="bg-blue-100 border-0 lg:min-w-[830px] lg:min-h-[630px] 3xl:min-w-[1024px] 3xl:min-h-[735px] overflow-auto"
         onPointerDownOutside={(e) => e.preventDefault()}
-        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogTitle hidden />
 
@@ -126,6 +127,7 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
           <Form {...methods}>
             <form
               className="relative flex flex-col items-center gap-5 mt-10"
+              autoComplete="off"
               onSubmit={methods.handleSubmit(handleSubmitChangedUserInfo)}
             >
               <Avatar

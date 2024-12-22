@@ -57,7 +57,6 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
       <DialogContent
         className="bg-blue-100 border-0 lg:min-w-[830px] lg:min-h-[635px] 3xl:min-w-[1024px]"
         onPointerDownOutside={(e) => e.preventDefault()}
-        onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogTitle hidden />
         <SigninMarks />
@@ -73,6 +72,7 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
           <Form {...methods}>
             <form
               className="flex flex-col items-center gap-5 mt-10"
+              autoComplete="off"
               onSubmit={methods.handleSubmit(handleSignin)}
             >
               <CustomInputForm
