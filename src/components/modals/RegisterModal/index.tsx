@@ -63,7 +63,6 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
           <Form {...methods}>
             <form
               className="flex flex-col items-center gap-5 mt-10"
-              autoComplete="off"
               onSubmit={methods.handleSubmit(handleRegister)}
             >
               <CustomInputForm

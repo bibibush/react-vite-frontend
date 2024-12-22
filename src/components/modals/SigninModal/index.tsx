@@ -72,7 +72,6 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
           <Form {...methods}>
             <form
               className="flex flex-col items-center gap-5 mt-10"
-              autoComplete="off"
               onSubmit={methods.handleSubmit(handleSignin)}
             >
               <CustomInputForm

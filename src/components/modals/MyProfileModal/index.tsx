@@ -87,11 +87,9 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
       return;
     }
 
-    setTimeout(() => {
-      methods.reset({
-        username,
-      });
-    }, 10);
+    methods.reset({
+      username,
+    });
     setSelectedImgURL(profileImg);
   }, [username, methods, profileImg]);
 
@@ -127,7 +125,6 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
           <Form {...methods}>
             <form
               className="relative flex flex-col items-center gap-5 mt-10"
-              autoComplete="off"
               onSubmit={methods.handleSubmit(handleSubmitChangedUserInfo)}
             >
               <Avatar

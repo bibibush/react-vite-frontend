@@ -6,6 +6,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useEffect, useRef } from "react";
 import { Control, FieldValues, Path, RegisterOptions } from "react-hook-form";
 
 interface CustomInputFormProps<T extends FieldValues> {
@@ -27,6 +28,14 @@ function CustomInputForm<T extends FieldValues>({
   placeholder,
   isPassword,
 }: CustomInputFormProps<T>) {
+  const customInput = useRef<HTMLInputElement>();
+
+  useEffect(() => {
+    setTimeout(() => {
+      customInput.current?.blur();
+    }, 10);
+  }, []);
+
   return (
     <FormField
       control={control}
@@ -37,10 +46,17 @@ function CustomInputForm<T extends FieldValues>({
           <FormLabel className="font-semibold">{label}</FormLabel>
           <FormControl>
             <Input
+              {...field}
+              autoComplete="off"
               type={isPassword ? "password" : "text"}
               className={className}
               placeholder={placeholder}
-              {...field}
+              ref={(e) => {
+                field.ref(e);
+                if (e) {
+                  customInput.current = e;
+                }
+              }}
             />
           </FormControl>
           <FormMessage />
