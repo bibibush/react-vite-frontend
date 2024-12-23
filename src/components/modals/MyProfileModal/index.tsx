@@ -1,4 +1,3 @@
-import SigninMarks from "@/components/SigninMarks";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import SkyBalloon from "@/assets/skyballoon.png";
 import { Form } from "@/components/ui/form";
@@ -138,7 +137,6 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
       >
         <DialogTitle hidden />
 
-        <SigninMarks />
         <img
           className="absolute 3xl:top-[80px] 3xl:left-10 3xl:w-[269px]"
           src={SkyBalloon}

@@ -6,7 +6,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Control, FieldValues, Path, RegisterOptions } from "react-hook-form";
 
 interface CustomInputFormProps<T extends FieldValues> {
@@ -47,7 +47,6 @@ function CustomInputForm<T extends FieldValues>({
           <FormControl>
             <Input
               {...field}
-              autoComplete="off"
               type={isPassword ? "password" : "text"}
               className={className}
               placeholder={placeholder}
@@ -64,4 +63,4 @@ function CustomInputForm<T extends FieldValues>({
   );
 }
 
-export default CustomInputForm;
+export default React.memo(CustomInputForm) as typeof CustomInputForm;

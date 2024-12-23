@@ -26,7 +26,8 @@ function Balance({ invests, userId }: BalanceProps) {
   }, [invests]);
 
   const differenceRate = useMemo(() => {
-    const result = (totalBalance ?? 0) / (totalInvested ?? 0);
+    const result =
+      ((totalBalance ?? 0) - (totalInvested ?? 0)) / (totalInvested ?? 0);
     if (!result && result !== 0) {
       return `0%`;
     }

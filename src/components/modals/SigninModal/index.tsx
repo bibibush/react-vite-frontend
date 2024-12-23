@@ -1,4 +1,3 @@
-import SigninMarks from "@/components/SigninMarks";
 import SkyBalloon from "@/assets/skyballoon.png";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useForm } from "react-hook-form";
@@ -72,7 +71,6 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogTitle hidden />
-        <SigninMarks />
         <img
           className="absolute 3xl:top-[80px] 3xl:left-10 3xl:w-[269px]"
           src={SkyBalloon}

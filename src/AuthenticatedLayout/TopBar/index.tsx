@@ -13,8 +13,11 @@ import { Fragment, useState } from "react";
 import SigninModal from "@/components/modals/SigninModal";
 import RegisterModal from "@/components/modals/RegisterModal";
 import MyProfileModal from "@/components/modals/MyProfileModal";
+import { useToast } from "@/hooks/use-toast";
 
 function TopBar() {
+  const { toast } = useToast();
+
   const isSignedIn = useFoxStore((state) => state.isSignedIn);
   const username = useFoxStore((state) => state.user.username);
   const profileImg = useFoxStore((state) => state.user.profileImg);
@@ -25,6 +28,14 @@ function TopBar() {
     useState<boolean>(false);
   const [isOpenMyProfileModal, setIsOpenMyProfileModal] =
     useState<boolean>(false);
+
+  const handleSignOut = () => {
+    onSignout();
+    toast({
+      title: "로그아웃",
+      description: "로그아웃 되었습니다.",
+    });
+  };
 
   const handleOpenSigninModal = () => {
     setIsOpenSigninModal(true);
@@ -77,7 +88,7 @@ function TopBar() {
                     </span>
                     <span
                       className="flex gap-2 p-2 rounded-lg cursor-pointer hover:bg-gray-100"
-                      onClick={onSignout}
+                      onClick={handleSignOut}
                     >
                       <LogoutIcon color="#84828A" />
                       Logout

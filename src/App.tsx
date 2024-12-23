@@ -31,14 +31,6 @@ function App() {
           path: "/",
           element: <DashBoardPage />,
         },
-        {
-          path: "/exchange",
-          element: <></>,
-        },
-        {
-          path: "/contact",
-          element: <></>,
-        },
       ],
     },
   ]);
