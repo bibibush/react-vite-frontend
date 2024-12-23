@@ -17,7 +17,7 @@ function InputTopBar() {
     <div className="relative">
       <Input
         className="lg:w-[244px] h-10 bg-[#F7F6F9] rounded-lg placeholder:text-[#A49F9F] peer"
-        placeholder="     Search for stocks and more"
+        placeholder="     찾으시는 주식을 검색해보세요."
         {...register("search", {
           onChange: debounce((e) => onChangeKeyword(e.target.value), 300),
         })}

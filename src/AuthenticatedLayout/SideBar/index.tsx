@@ -36,12 +36,11 @@ function SideBar() {
       <div className="relative flex justify-center w-full">
         <UnionIcon />
         <img className="absolute lg:top-5" alt="light image" src={lightImage} />
-        <p className="absolute text-sm lg:top-20 text-[#838383]">
-          Thoughts Time
-        </p>
+        <p className="absolute text-sm lg:top-20 text-[#838383]">잠깐!</p>
         <div className="absolute lg:w-[183px] text-center lg:top-28">
-          if you aren't willing to own a stock for 10 years.
-          <br /> don't even think about owing it for 10 minutes.
+          10년 동안 주식을 보유할 자신이 없으시면,
+          <br />
+          <br /> 10분이라도 주식을 보유하지 마세요.
         </div>
       </div>
       {isSignedIn && (
