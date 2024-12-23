@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useFoxStore } from "@/zustand/store";
 import requestAPI from "@/api";
 import { cookieService } from "@/lib/cookieService";
+import { useToast } from "@/hooks/use-toast";
+import { AxiosError } from "axios";
 
 interface SigninModalProps {
   isOpen: boolean;
@@ -20,6 +22,8 @@ interface AuthenticateFormParams {
 }
 
 function SigninModal({ isOpen, onClose }: SigninModalProps) {
+  const { toast } = useToast();
+
   const methods = useForm<AuthenticateFormParams>({
     defaultValues: {
       userEmail: "",
@@ -47,8 +51,17 @@ function SigninModal({ isOpen, onClose }: SigninModalProps) {
       setUserId(String(res.data.user.id));
       methods.reset();
       onClose();
+      toast({
+        title: "로그인 성공",
+        description: "로그인에 성공했습니다.",
+      });
     } catch (e) {
       console.error(e);
+      toast({
+        variant: "destructive",
+        title: "로그인 실패",
+        description: e instanceof AxiosError ? e.message : "알 수 없는 에러",
+      });
     }
   };
 

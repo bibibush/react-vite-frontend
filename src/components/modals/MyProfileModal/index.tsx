@@ -11,6 +11,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useChangeUser from "@/hooks/useChangeUser";
 import { Badge } from "@/components/ui/badge";
+import User from "@/types/User";
+import { useToast } from "@/hooks/use-toast";
 
 interface MyProfileModalProps {
   isOpen: boolean;
@@ -18,11 +20,14 @@ interface MyProfileModalProps {
 }
 
 function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
+  const { toast } = useToast();
+
   const {
     username,
     profileImg,
     id: userId,
   } = useFoxStore((state) => state.user);
+  const setUser = useFoxStore((state) => state.setUser);
 
   const [selectedImg, setSelectedImg] = useState<File | null>(null);
   const [selectedImgURL, setSelectedImgURL] = useState<string | null>(null);
@@ -73,13 +78,32 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
         extraData["password2"] = data.password2;
       }
 
-      changeUser({
-        username: data.username,
-        userId,
-        ...extraData,
-      });
+      changeUser(
+        {
+          username: data.username,
+          userId,
+          ...extraData,
+        },
+        {
+          onSuccess: (data: User) => {
+            setUser(data);
+            toast({
+              title: "유저 정보 수정 성공",
+              description: "성공적으로 정보 수정이 완료되었습니다.",
+            });
+            onClose();
+          },
+          onError: (error) => {
+            toast({
+              variant: "destructive",
+              title: "유저 정보 수정 실패",
+              description: `${error.message}`,
+            });
+          },
+        }
+      );
     },
-    [userId, selectedImg, changeUser]
+    [userId, selectedImg, toast, changeUser, setUser, onClose]
   );
 
   useEffect(() => {
@@ -89,6 +113,8 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
 
     methods.reset({
       username,
+      password1: methods.getValues("password1"),
+      password2: methods.getValues("password2"),
     });
     setSelectedImgURL(profileImg);
   }, [username, methods, profileImg]);

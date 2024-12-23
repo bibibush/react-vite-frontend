@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import CustomInputForm from "@/components/forms/CustomInputForm";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { useToast } from "@/hooks/use-toast";
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ interface RegisterFormParams {
 }
 
 function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
+  const { toast } = useToast();
+
   const methods = useForm<RegisterFormParams>({
     defaultValues: {
       email: "",
@@ -38,8 +41,17 @@ function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
       await axios.post("/api/users/create/", formData);
       onClose();
       methods.reset();
+      toast({
+        title: "회원가입 완료",
+        description: "회원가입이 성공적으로 이루어졌습니다.",
+      });
     } catch (e) {
       console.error(e);
+      toast({
+        variant: "destructive",
+        title: "회원가입 실패",
+        description: e instanceof AxiosError ? e.message : "알 수 없는 에러",
+      });
     }
   };
 

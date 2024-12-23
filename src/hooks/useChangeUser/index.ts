@@ -1,5 +1,6 @@
 import requestAPI from "@/api";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 interface ChangeUserData {
   userId: number;
@@ -28,6 +29,7 @@ async function changeUserAPI(data: ChangeUserData) {
     return res.data;
   } catch (e) {
     console.error(e);
+    throw new Error(e instanceof AxiosError ? e.message : "알 수 없는 에러");
   }
 }
 
