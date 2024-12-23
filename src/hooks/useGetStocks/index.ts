@@ -24,6 +24,7 @@ async function getStocksAPI(params: GetStocksParams) {
     return response.data;
   } catch (e) {
     console.error(e);
+    return Promise.reject(e);
   }
 }
 

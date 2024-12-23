@@ -24,6 +24,7 @@ async function getDataTableAPI(params: GetDataTableParams) {
     return res.data;
   } catch (e) {
     console.error(e);
+    return Promise.reject(e);
   }
 }
 

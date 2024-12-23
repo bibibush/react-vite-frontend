@@ -26,6 +26,7 @@ async function getChartDataAPI(params: GetChartDataParams) {
     return res.data;
   } catch (e) {
     console.error(e);
+    return Promise.reject(e);
   }
 }
 
