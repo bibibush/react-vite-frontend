@@ -159,7 +159,7 @@ function MyProfileModal({ isOpen, onClose }: MyProfileModalProps) {
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
               <Badge
-                className="absolute top-32 right-32"
+                className="absolute cursor-pointer top-32 right-32"
                 onClick={handleResetImg}
               >
                 X
