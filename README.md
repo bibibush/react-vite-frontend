@@ -1,5 +1,5 @@
 # 증권 대시보드 웹사이트 (프론트 엔드)
-### 백엔드 깃헙 페이지: https://github.com/bibibush/Foxstocks_Django_backend
+##### 백엔드 깃헙 페이지: https://github.com/bibibush/Foxstocks_Django_backend
 
 ## 소개
 > 네이버 증권 페이지를 크롤링해서 증권들을 한 눈에 보기 쉬운 대시보드 웹사이트를 개발했습니다.
