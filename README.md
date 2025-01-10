@@ -18,13 +18,13 @@
 ## 사용 기술
 - Typescript
 - React:18.3
-- tailwindcss
-- shad cn
-- tanstack query:v5
-- zustand
-- react-hook-form
-- tanstack table
-- aws s3
+- Tailwindcss
+- Shad cn
+- Tanstack Query:v5
+- Zustand
+- React-Hook-Form
+- Tanstack Table
+- AWS s3
 
 <br />
 
