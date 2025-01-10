@@ -12,3 +12,16 @@
 > 프로필 이미지는 미리보기 기능이 구현되어있습니다.
 >
 > 서버에서 가져오는 상태의 관리는 tanstack query, 전역상태의 관리는 zustand를 사용해 사용자 정보 및 인증상태를 구현했습니다.
+
+<br />
+
+## 사용 기술
+- typescript
+- react
+- tailwindcss
+- shad cn
+- tanstack query:v5
+- zustand
+- react-hook-form
+- tanstack table
+- aws s3
