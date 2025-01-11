@@ -28,7 +28,7 @@
 
 <br />
 
-## 핵심 기능
+## 핵심 설명
 <details>
   <summary><b>동적인 사이드바 메뉴 구현</b></summary>
 
@@ -72,4 +72,46 @@
   const { menuList } = useMenuList({ pathName: location.pathname });
 ```
 이렇게 구현해서 동적인 효과를 가지는 메뉴리스트를 구현했습니다.
+</details>
+
+<br />
+
+<details>
+  <summary><b>React Query(Tanstack Query)를 커스텀 훅으로 만들어 재사용 용이하게 하기</b></summary>
+
+  react query를 사용해서 서버에서 받아오는 데이터를 유용하게 관리할 수 있었습니다. 특히, 데이터를 가져오는 로딩상태인지, 캐싱을 사용할 것인지, 데이터를 리패칭하는 중 이전의 데이터를 계속 보여줄지, 몇 초 마다 리패치할 것인지 등 서버 상태를   관리하는데 있어서 최고의 도구라고 생각합니다.
+  <br />
+  이 react query를 커스텀 훅으로 사용하면 재사용하기 용이할 뿐만 아니라 한 커스텀 훅이 서버의 무슨 데이터를 가져오는지 더욱 명확하게 알 수 있습니다. 그래서 저는 react query를 사용할 때 항상 커스텀 훅으로 만들어서 사용합니다.
+  <br />
+  한 예시를 보여드리겠습니다.
+  ```typescript
+  interface GetStocksResponse {
+  data: Array<Stock>;
+  invests: Array<Invested>;
+}
+
+interface GetStocksParams {
+  userId: number | null;
+}
+
+export default function useGetStocks(
+  params: GetStocksParams,
+  options?: Omit<UseQueryOptions<GetStocksResponse>, "queryKey">
+) {
+  const results = useQuery<GetStocksResponse>({
+    queryKey: ["stocks", params.userId],
+    queryFn: () => getStocksAPI(params),
+    ...options,
+  });
+
+  return {
+    ...results,
+    data: results.data?.data,
+    invests: results.data?.invests,
+  };
+}
+  ```
+크롤링한 주식 정보들을 가져오고 1분 마다 업데이트하는 로직을 위해 useGetStocks라는 훅을 만들었습니다.<br />
+useGetStocks는 userId라는 프로퍼티가 있는 객체를 인자로 받고, useQuery의 옵션들을 옵셔널한 매개변수로 받습니다. 여기서 타입스크립트의 Omit을 사용해서 UseQueryOptions타입의 queryKey속성을 제거해 주지 않으면 queryKey 중복 에러가 발생합니다.
+<br />
 </details>
