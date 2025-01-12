@@ -143,3 +143,11 @@ useGetStocks는 userId라는 프로퍼티가 있는 객체를 인자로 받고, 
 <br />
 react query를 커스텀 훅으로 사용해서 재사용하기 쉽고 목적을 쉽게 알 수 있게 코드를 구현했습니다.
 </details>
+
+<br />
+
+<details>
+  <summary><b>JWT토큰을 활용한 인증 구현</b></summary>
+
+  JWT토큰 인증방식을 사용할때 주로 사용되는 accessToken은 로컬스토리지, accessToken이 만료되서 새로운 accessToken을 재요청하는 용도로 사용되는 refreshToken은 react-cookie를 사용해서 구현했습니다.
+</details>
