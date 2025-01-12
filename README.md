@@ -114,4 +114,31 @@ export default function useGetStocks(
 크롤링한 주식 정보들을 가져오고 1분 마다 업데이트하는 로직을 위해 useGetStocks라는 훅을 만들었습니다.<br />
 useGetStocks는 userId라는 프로퍼티가 있는 객체를 인자로 받고, useQuery의 옵션들을 옵셔널한 매개변수로 받습니다. 여기서 타입스크립트의 Omit을 사용해서 UseQueryOptions타입의 queryKey속성을 제거해 주지 않으면 queryKey 중복 에러가 발생합니다.
 <br />
+매개변수로 받은 유저의 id를 쿼리키에 추가하여 유저의 id가 바뀔때 마다 리패치가 되도록 구현했습니다.
+<br />
+쿼리함수로는 응답이 성공적이면 GetStocksResponse타입을 가지는 응답 값을 반환하고 만약 응답에 오류가 생기면 Promise의 reject를 반환하는 함수를 할당했습니다. 그리고 useQuery의 옵션들을 스프레드 형식으로 전해줍니다.
+<br />
+훅의 반환값으로 각 데이터값, 서버에서 가져온 데이터의 상태를 알려주는 값들을 객체안에 담아 반환했습니다.
+<br />
+작성된 예시의 훅의 사용은
+```typescript
+ const {
+    data: stocks,
+    isLoading,
+    invests: investsData,
+  } = useGetStocks(
+    { userId },
+    {
+      placeholderData: keepPreviousData,
+      refetchInterval: 60 * 1000,
+    }
+  );
+```
+이런식으로 사용하면 됩니다. 이렇게 훅의 이름을 목적에 맞게 명확히 하면 이 훅이 주식들을 가져온다는 것을 쉽게 알 수 있습니다.
+<br />
+또한 훅의 첫번째 인자로 쿼리함수로 전달 될 매개변수들을 작성하고 두번째 인자로는 쿼리 관리에 유용하게 사용되는 옵션들을 작성해서, 이 훅을 재사용하기 쉽게 구현했습니다.
+<br />
+위 예시의 훅은 유저의 id가 변경될 때마다 또는 1분 마다 쿼리를 리패치 시키고, 쿼리가 리패치될때 이전 데이터를 데이터 패치가 완료되기 전까지 보여줍니다.
+<br />
+react query를 커스텀 훅으로 사용해서 재사용하기 쉽고 목적을 쉽게 알 수 있게 코드를 구현했습니다.
 </details>
