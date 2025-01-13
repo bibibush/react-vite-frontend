@@ -199,7 +199,7 @@ react query를 커스텀 훅으로 사용해서 재사용하기 쉽고 목적을
 만약 로그인 과정중 에러가 발생하면 catch문으로 이동하여 콘솔에러를 띄우고 로그인 실패 토스트 ui를 띄웁니다. 이때, axios에러가 발생한다면, 즉 서버에 POST요청이 실패한다면 서버 측 에러메시지를 띄우고, 그게 아니라면 "알 수 없는 에러"메시지를 출력합니다.
 <br />
 
-최상위 컴포넌트에서 useEffect를 사용해 리프레시토큰이 쿠키에 저장이 되어있고, 엑세스토큰이 전역변수로서 처음에 저장 또는 변경될 때마다 로컬저장소에 저장된 엑세스토큰을 만료시키고 새로운 엑세스토큰을 요청하는 로직을 작성합니다.
+최상위 컴포넌트에서 useEffect를 사용해 리프레시토큰이 쿠키에 저장이 되어있고, 엑세스토큰이 전역상태로서 처음에 저장 또는 변경될 때마다 로컬저장소에 저장된 엑세스토큰을 만료시키고 새로운 엑세스토큰을 요청하는 로직을 작성합니다.
 ```typescript
 useEffect(() => {
     const refresh = cookieService.getCookie("refreshToken");
@@ -271,4 +271,252 @@ export default function requestAPI({
 <br />
 
 이렇게 JWT인증 방식을 구현해서 클라이언트, 서버 간 통신의 보안을 강화했습니다.
+</details>
+
+<br />
+
+<details>
+  <summary><b>zustand를 활용한 전역상태 관리</b></summary>
+
+  프론트엔드 프레임워크로서 리엑트를 사용하게   email: data.userEmail,
+          password: data.password,
+        },
+        withJWT: false,
+      });
+
+      cookieService.setCookie("refreshToken", res.data.refresh, {
+        maxAge: 60 * 30,
+      });
+      setAccessToken(res.data.access);
+      setUserId(String(res.data.user.id));
+      methods.reset();
+      onClose();
+      toast({
+        title: "로그인 성공",
+        description: "로그인에 성공했습니다.",
+      });
+    } catch (e) {
+      console.error(e);
+      toast({
+        variant: "destructive",
+        title: "로그인 실패",
+        description: e instanceof AxiosError ? e.message : "알 수 없는 에러",
+      });
+    }
+  };
+```
+로그인 시도 후 실패 시 예외처리 구현은 try catch문을 사용했습니다. 먼저, 로그인 요청을 시도하고 성공했다면 리프레시토큰과 엑세스토큰을 받아옵니다.
+<br />
+리프레시토큰은 30분 후에 만료되는 쿠키로서 저장합니다. 그리고 엑세스토큰은 setAccessToken이라는 zustand를 사용한 상태변경 메소드를 사용해 전역상태로서 저장합니다.
+<br />
+
+그렇게 성공적으로 로그인에 대한 작업이 완료되면 shad cn의 toast를 사용해 로그인 성공 토스트 ui를 보여줍니다.
+<br />
+만약 로그인 과정중 에러가 발생하면 catch문으로 이동하여 콘솔에러를 띄우고 로그인 실패 토스트 ui를 띄웁니다. 이때, axios에러가 발생한다면, 즉 서버에 POST요청이 실패한다면 서버 측 에러메시지를 띄우고, 그게 아니라면 "알 수 없는 에러"메시지를 출력합니다.
+<br />
+
+최상위 컴포넌트에서 useEffect를 사용해 리프레시토큰이 쿠키에 저장이 되어있고, 엑세스토큰이 전역상태로서 처음에 저장 또는 변경될 때마다 로컬저장소에 저장된 엑세스토큰을 만료시키고 새로운 엑세스토큰을 요청하는 로직을 작성합니다.
+```typescript
+useEffect(() => {
+    const refresh = cookieService.getCookie("refreshToken");
+    if (!refresh) {
+      onSignout();
+      return;
+    }
+
+    const expireAccessToken = setTimeout(() => {
+      tokenService.removeToken(["accessToken"]);
+      handleRefresh(refresh);
+    }, 1000 * 60 * 10);
+
+    return () => clearTimeout(expireAccessToken);
+  }, [accessToken, onSignout, handleRefresh]);
+```
+이렇게 짧은 주기로 엑세스토큰을 변경해 주면 만약 토큰이 탈취되더라도 토큰이 사용될 수 있는 시간이 짧아 보안에 도움이 됩니다.
+<br />
+만약 엑세스토큰이 만료가 되었는데 리프레시토큰이 쿠키에 저장되어있지 않다면 즉시 로그아웃을 시킵니다.
+<br />
+
+사용자가 페이지를 새로고침하더라도 로컬저장소에 엑세스토큰이 있다면 로그인 상태를 유지합니다.
+```typescript
+ useEffect(() => {
+    const token = tokenService.getToken("accessToken");
+    const userId = tokenService.getToken("userId");
+
+    if (!token || !userId) {
+      onSignout();
+      return;
+    }
+
+    setUserId(userId);
+    setAccessToken(token);
+  }, [setAccessToken, onSignout, setUserId]);
+```
+만약 엑세스토큰이 로컬저장소에 없다면 즉시 로그아웃을 시킵니다.
+<br />
+
+이렇게 저장된 엑세스토큰은 서버와의 통신에서 인증도구로 사용됩니다.
+```typescript
+export default function requestAPI({
+  headers,
+  params,
+  method,
+  url,
+  withJWT,
+  ...config
+}: requestParams) {
+  if (withJWT) {
+    const token = tokenService.getToken("accessToken");
+    if (!token) {
+      const error = Object.assign(new Error("Unauthorized"), {
+        response: {
+          status: 401,
+          statusText: "Unauthorized",
+        },
+      });
+
+      return Promise.reject(error);
+    }
+
+    headers = { ...headers, Authorization: `Bearer ${token}` };
+  } ...
+```
+엑세스토큰을 요청 헤더의 Authorization에대한 값으로 넣고 서버와의 통신을 하면 엑세스토큰이 유효하면 성공적으로 응답 값을 보내주고 아니라면 서버 측에서 에러를 출력할 것입니다.
+<br />
+만약 엑세스토큰이 없는채로 서버와 요청을 하면 클라이언트 측에서 401에러를 반환하도록 했습니다.
+<br />
+
+이렇게 JWT인증 방식을 구현해서 클라이언트, 서버 간 통신의 보안을 강화했습니다.
+</details>
+
+<br />
+
+<details>
+  <summary><b>zustand를 활용한 전역상태 관리</b></summary>
+
+  프론트엔드 프레임워크로서 리액트를 사용하게 되면 상태를 다른 컴포넌트와 공유하고 싶을때, 일반적인 방식으로는, 단방향 흐름의 특성상 상위 컴포넌트에서 하위 컴포넌트로 프롭스를 통해 내려줄 수 밖에 없습니다.
+  <br />
+  컴포넌트의 중첩이 한 두번이면 큰 상관없겠지만, 규모가 큰 프로젝트일 때는 프롭스를 상속시키기 위해 무수히 많은 컴포넌트를 거쳐야하기 때문에 불편함이 있습니다.
+  <br />
+
+  그래서 리액트를 사용할때 context API, redux, recoil, zustand 등등 전역상태 도구를 많이 사용합니다.
+  <br />
+  전의 회사에서는, 리덕스를 사용했었습니다. 저는 당시, 전역상태관리는 context API밖에 몰랐기 때문에 리덕스를 사용하면서 어떤점이 좋았었는지 별로 와닿지 않았습니다.
+  <br />
+  지금 생각해보면 리덕스는 서버로 부터 데이터를 가져와서 데이터가 성공적으로 가져와졌는지, 데이터를 가져오는데 에러가 발생했는지에 따라 전역상태를 생성 또는 변경하고 이 전역상태를 여러 컴포넌트에서 사용가능하게 하는, 즉 단방향 흐름의 속성    을 가지는 전역상태 툴이여서 대규모 프로젝트에 사용하기 나쁘지 않다는 점이 있는것 같습니다.
+  <br />
+
+  그렇다고 해도, 리덕스는 사전작업이 많이 필요하기 때문에 사용하기 번거롭고(특히, 작은 프로젝트에서), 벌써 서버에서 가져오는 데이터관리를 리액트 쿼리를 사용하고 있으면 사용용도가 겹치게 된다는 단점이 있었습니다.
+  <br />
+  그래서 저는 zustand를 사용했습니다. zustand는 최근 가장 인기있는 전역상태 관리 도구로서 자리매김했고, 리덕스에 비해 사용하기 간편합니다. 또한 서버 측 데이터와 아무 관계가 없기 때문에 리액트 쿼리와 함께 사용하기 좋습니다.
+  <br />
+  zustand를 사용하기 위해서 store를 작성했습니다.\
+  ```typescript
+  const initialState: Store = {
+  user: {
+    id: null,
+    isSuperuser: false,
+    username: null,
+    firstName: null,
+    lastName: null,
+    email: null,
+    isStaff: false,
+    dateJoined: null,
+    invests: null,
+    profileImg: null,
+  },
+  accessToken: null,
+  isSignedIn: false,
+  topbarKeyword: "",
+};
+
+export const useFoxStore = create<Store & Actions>((set) => ({
+  ...initialState,
+  setAccessToken: (token) =>
+    set(() => {
+      tokenService.setToken("accessToken", token);
+      return { accessToken: token, isSignedIn: true };
+    }),
+  onChangeKeyword: (value) =>
+    set(() => {
+      return { topbarKeyword: value };
+    }),
+  setUserId: (userId) =>
+    set((state) => {
+      tokenService.setToken("userId", userId);
+      return { user: { ...state.user, id: Number(userId) } };
+    }),
+  setUser: (user) =>
+    set((state) => {
+      return { user: { ...user, invests: state.user.invests } };
+    }),
+  setInvests: (invests) =>
+    set((state) => {
+      return { user: { ...state.user, invests } };
+    }),
+  onSignout: () =>
+    set(() => {
+      cookieService.removeCookie("refreshToken");
+      tokenService.removeToken(["accessToken", "userId"]);
+      return initialState;
+    }),
+}));
+```
+이렇게 하면 zustand의 전역상태와 전역상태변경 메소드를 사용하기 위한 준비가 다 끝났습니다.
+<br />
+사용 예시로는, 전의 예시에서 사용했던 JWT인증 방식의 엑세스토큰을 전역상태로 저장하는 것을 보여드리겠습니다.
+```typescript
+const { setAccessToken, setUserId } = useFoxStore((state) => state);
+
+const handleSignin = async (data: AuthenticateFormParams) => {
+    try {
+      const res = await requestAPI({
+        url: "/api/users/token/",
+        method: "POST",
+        data: {
+          email: data.userEmail,
+          password: data.password,
+        },
+        withJWT: false,
+      });
+
+      cookieService.setCookie("refreshToken", res.data.refresh, {
+        maxAge: 60 * 30,
+      });
+      setAccessToken(res.data.access);
+      setUserId(String(res.data.user.id));
+      methods.reset();
+      onClose();
+      toast({
+        title: "로그인 성공",
+        description: "로그인에 성공했습니다.",
+      });
+    } ...
+```
+로그인 시도를 할때 요청이 성공적으로 완료되면 서버로부터 받은 엑세스토큰을 setAccessToken 전역상태변경 메소드에 인자로 넘겨 전역상태의 변경을 구현합니다.
+<br />
+이렇게 변경된 전역상태는
+```typescript
+const { accessToken, setAccessToken, onSignout, setUser, setUserId } =
+    useFoxStore((state) => state);
+
+ useEffect(() => {
+    const refresh = cookieService.getCookie("refreshToken");
+    if (!refresh) {
+      onSignout();
+      return;
+    }
+
+    const expireAccessToken = setTimeout(() => {
+      tokenService.removeToken(["accessToken"]);
+      handleRefresh(refresh);
+    }, 1000 * 60 * 10);
+
+    return () => clearTimeout(expireAccessToken);
+  }, [accessToken, onSignout, handleRefresh]);
+```
+useEffect의 의존성 배열에 넣어 엑세스 토큰이 변경될 때마다 만료되는 시간을 부여하도록 설정할 수 있습니다.
+<br />
+
+이렇게 쉽게 전역상태를 관리함으로써 규모가 큰 프로젝트든 작은 프로젝트든 리액트 쿼리와 함께 사용하여 여러 컴포넌트에서 효율적으로 사용할 수 있게 했습니다.
 </details>
