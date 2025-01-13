@@ -150,4 +150,50 @@ react query를 커스텀 훅으로 사용해서 재사용하기 쉽고 목적을
   <summary><b>JWT토큰을 활용한 인증 구현</b></summary>
 
   JWT토큰 인증방식을 사용할때 주로 사용되는 accessToken은 로컬스토리지, accessToken이 만료되서 새로운 accessToken을 재요청하는 용도로 사용되는 refreshToken은 react-cookie를 사용해서 구현했습니다.
+  <br />
+  로그인 방식은 이메일과 비밀번호를 검증하는 방식으로 처리했습니다.
+  ```typescript
+   const handleSignin = async (data: AuthenticateFormParams) => {
+    try {
+      const res = await requestAPI({
+        url: "/api/users/token/",
+        method: "POST",
+        data: {
+          email: data.userEmail,
+          password: data.password,
+        },
+        withJWT: false,
+      });
+
+      cookieService.setCookie("refreshToken", res.data.refresh, {
+        maxAge: 60 * 30,
+      });
+      setAccessToken(res.data.access);
+      setUserId(String(res.data.user.id));
+      methods.reset();
+      onClose();
+      toast({
+        title: "로그인 성공",
+        description: "로그인에 성공했습니다.",
+      });
+    } catch (e) {
+      console.error(e);
+      toast({
+        variant: "destructive",
+        title: "로그인 실패",
+        description: e instanceof AxiosError ? e.message : "알 수 없는 에러",
+      });
+    }
+  };
+```
+로그인 시도 후 실패 시 예외처리 구현은 try catch문을 사용했습니다. 먼저, 로그인 요청을 시도하고 성공했다면 리프레시토큰과 엑세스토큰을 받아옵니다.
+<br />
+리프레시토큰은 30분 후에 만료되는 쿠키로서 저장합니다. 그리고 엑세스토큰은 setAccessToken이라는 zustand를 사용한 상태변경 메소드를 사용해 전역상태로서 저장합니다.
+<br />
+그렇게 성공적으로 로그인에 대한 작업이 완료되면 shad cn의 toast를 사용해 로그인 성공 토스트 ui를 보여줍니다.
+<br />
+만약 로그인 과정중 에러가 발생하면 catch문으로 이동하여 콘솔에러를 띄우고 로그인 실패 토스트 ui를 띄웁니다. 이때, axios에러가 발생한다면, 즉 서버에 POST요청이 실패한다면 서버 측 에러메시지를 띄우고, 그게 아니라면 "알 수 없는 에러"메시지를 출력합니다.
+<br />
+
+
 </details>
