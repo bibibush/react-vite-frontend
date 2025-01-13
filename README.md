@@ -199,5 +199,76 @@ react query를 커스텀 훅으로 사용해서 재사용하기 쉽고 목적을
 만약 로그인 과정중 에러가 발생하면 catch문으로 이동하여 콘솔에러를 띄우고 로그인 실패 토스트 ui를 띄웁니다. 이때, axios에러가 발생한다면, 즉 서버에 POST요청이 실패한다면 서버 측 에러메시지를 띄우고, 그게 아니라면 "알 수 없는 에러"메시지를 출력합니다.
 <br />
 
+최상위 컴포넌트에서 useEffect를 사용해 리프레시토큰이 쿠키에 저장이 되어있고, 엑세스토큰이 전역변수로서 처음에 저장 또는 변경될 때마다 로컬저장소에 저장된 엑세스토큰을 만료시키고 새로운 엑세스토큰을 요청하는 로직을 작성합니다.
+```typescript
+useEffect(() => {
+    const refresh = cookieService.getCookie("refreshToken");
+    if (!refresh) {
+      onSignout();
+      return;
+    }
 
+    const expireAccessToken = setTimeout(() => {
+      tokenService.removeToken(["accessToken"]);
+      handleRefresh(refresh);
+    }, 1000 * 60 * 10);
+
+    return () => clearTimeout(expireAccessToken);
+  }, [accessToken, onSignout, handleRefresh]);
+```
+이렇게 짧은 주기로 엑세스토큰을 변경해 주면 만약 토큰이 탈취되더라도 토큰이 사용될 수 있는 시간이 짧아 보안에 도움이 됩니다.
+<br />
+만약 엑세스토큰이 만료가 되었는데 리프레시토큰이 쿠키에 저장되어있지 않다면 즉시 로그아웃을 시킵니다.
+<br />
+
+사용자가 페이지를 새로고침하더라도 로컬저장소에 엑세스토큰이 있다면 로그인 상태를 유지합니다.
+```typescript
+ useEffect(() => {
+    const token = tokenService.getToken("accessToken");
+    const userId = tokenService.getToken("userId");
+
+    if (!token || !userId) {
+      onSignout();
+      return;
+    }
+
+    setUserId(userId);
+    setAccessToken(token);
+  }, [setAccessToken, onSignout, setUserId]);
+```
+만약 엑세스토큰이 로컬저장소에 없다면 즉시 로그아웃을 시킵니다.
+<br />
+
+이렇게 저장된 엑세스토큰은 서버와의 통신에서 인증도구로 사용됩니다.
+```typescript
+export default function requestAPI({
+  headers,
+  params,
+  method,
+  url,
+  withJWT,
+  ...config
+}: requestParams) {
+  if (withJWT) {
+    const token = tokenService.getToken("accessToken");
+    if (!token) {
+      const error = Object.assign(new Error("Unauthorized"), {
+        response: {
+          status: 401,
+          statusText: "Unauthorized",
+        },
+      });
+
+      return Promise.reject(error);
+    }
+
+    headers = { ...headers, Authorization: `Bearer ${token}` };
+  } ...
+```
+엑세스토큰을 요청 헤더의 Authorization에대한 값으로 넣고 서버와의 통신을 하면 엑세스토큰이 유효하면 성공적으로 응답 값을 보내주고 아니라면 서버 측에서 에러를 출력할 것입니다.
+<br />
+만약 엑세스토큰이 없는채로 서버와 요청을 하면 클라이언트 측에서 401에러를 반환하도록 했습니다.
+<br />
+
+이렇게 JWT인증 방식을 구현해서 클라이언트, 서버 간 통신의 보안을 강화했습니다.
 </details>
