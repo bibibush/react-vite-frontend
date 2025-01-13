@@ -294,7 +294,7 @@ export default function requestAPI({
   <br />
   그래서 저는 zustand를 사용했습니다. zustand는 최근 가장 인기있는 전역상태 관리 도구로서 자리매김했고, 리덕스에 비해 사용하기 간편합니다. 또한 서버 측 데이터와 아무 관계가 없기 때문에 리액트 쿼리와 함께 사용하기 좋습니다.
   <br />
-  zustand를 사용하기 위해서 store를 작성했습니다.\
+  zustand를 사용하기 위해서 store를 작성했습니다.
   ```typescript
   const initialState: Store = {
   user: {
