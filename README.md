@@ -404,3 +404,81 @@ useEffect의 의존성 배열에 넣어 엑세스 토큰이 변경될 때마다 
 
 이렇게 쉽게 전역상태를 관리함으로써 규모가 큰 프로젝트든 작은 프로젝트든 리액트 쿼리와 함께 사용하여 여러 컴포넌트에서 효율적으로 사용할 수 있게 했습니다.
 </details>
+
+<br />
+
+<details>
+<summary><b>shadcn ui와 react-hook-form을 이용한 커스텀 인풋 유효성 검사 구현</b></summary>
+
+전의 회사에서는 chakra ui를 사용해 css를 구현했지만, 이번 개인 프로젝트는 tailwindcss를 사용해보고 싶었습니다. shadcn ui는 tailwindcss기반으로 만들어진 재사용하는 디자인 컴포넌트들을 가지고 있습니다.
+<br />
+즉, npm또는 yarn을 이용해 라이브러리를 설치하는것이 아닌, npx를 사용해 본인의 프로젝트에 컴포넌트를 저장하거나 또는 공식 문서에서 컴포넌트 코드를 그대로 복사해서 사용하는 형식입니다.
+<br />
+
+shadcn ui의 장점으로는 디자인 컴포넌트가 본인의 프로젝트 안에 있기 때문에 tailwindcss를 잘 이해하고 있으면 사용자의 입맛에 맞춰 변경을 할 수 있다는 점입니다.
+또한 데이트피커, 차트, 데이터테이블 등 공식문서에 정말 많은 형태의 컴포넌트 예시들이 있어서 여러 디자인을 구현하기 쉽다는 점이 있습니다.
+<br />
+단점으로는 tailwindcss에 대한 이해가 필요하다는 것 말고는 개인적으로 딱히 느끼는 것은 없었습니다.
+<br />
+
+shadcn ui에서는 유효성검사를 위한 폼도 지원을 하는데, react-hook-form와 같이 써서 재사용하기 정말 유용한 커스텀 인풋을 구현할 수 있습니다.
+<br />
+다음은 제가 구현한 커스텀인풋 컴포넌트 입니다.
+```typescript
+interface CustomInputFormProps<T extends FieldValues> {
+  control: Control<T>;
+  className?: string;
+  name: Path<T>;
+  label?: string;
+  rules?: RegisterOptions<T>;
+  placeholder?: string;
+  isPassword?: boolean;
+}
+
+function CustomInputForm<T extends FieldValues>({
+  control,
+  className,
+  name,
+  label,
+  rules,
+  placeholder,
+  isPassword,
+}: CustomInputFormProps<T>) {
+  const customInput = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      customInput.current?.blur();
+    }, 10);
+  }, []);
+
+  return (
+    <FormField
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="font-semibold">{label}</FormLabel>
+          <FormControl>
+            <Input
+              {...field}
+              type={isPassword ? "password" : "text"}
+              className={className}
+              placeholder={placeholder}
+              ref={(e) => {
+                field.ref(e);
+                customInput.current = e;
+              }}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+export default React.memo(CustomInputForm) as typeof CustomInputForm;
+```
+</details>
