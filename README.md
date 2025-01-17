@@ -538,3 +538,11 @@ Form 컴포넌트는 shadcn의 컴포넌트인데 react-hook-form의 FormProvide
 
 이런 식으로 커스텀 인풋 컴포넌트를 구현하면 프롭스의 rules에 따라 유효성 검사를 해주는 컴포넌트를 재사용하기 쉽게 구현할 수 있습니다.
 </details>
+
+<br />
+
+<details>
+  <summary><b>URL.createObjectURL를 사용한 이미지 미리보기 구현</b></summary>
+
+  이미지 미리보기를 구현하기 위해서는 이미지 요소에 필요한 url이 필요한데, 
+</details>
