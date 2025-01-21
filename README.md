@@ -688,65 +688,6 @@ useEffect 구문에서 선택된 로컬 이미지 파일이 없으면 다음 구
 결과적으로, 선택된 이미지 파일을 미리보기로 바로 보여질 수 있도록 구현했습니다.
 <br />
 
-페이지가 언마운트 되거나 이미지 파일이 변경될 때, URL.revokeObjectURL을 사용해    const convertedURL = URL.createObjectURL(selectedImg);
-    setSelectedImgURL(convertedURL);
-
-    return () => URL.revokeObjectURL(convertedURL);
-  }, [selectedImg]);
-
-...
-
-  <Avatar
-                className="cursor-pointer size-36"
-                onClick={() => profileInputRef.current?.click()}
-              >
-                <AvatarImage src={selectedImgURL ?? ""} />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-```
-먼저 selectedImg와 selectedImgURL이라는 두 개의 상태를 구현했습니다. 굳이 하나의 상태를 사용하지 않고 두 개의 상태를 사용하는 이유는
-```typescript
-const {
-    username,
-    profileImg,
-    id: userId,
-  } = useFoxStore((state) => state.user);
-
- useEffect(() => {
-    if (!username) {
-      return;
-    }
-
-    methods.reset({
-      username,
-      password1: methods.getValues("password1"),
-      password2: methods.getValues("password2"),
-    });
-    setSelectedImgURL(profileImg);
-  }, [username, methods, profileImg]);
-
-...
-
-  <Avatar
-                className="cursor-pointer size-36"
-                onClick={() => profileInputRef.current?.click()}
-              >
-                <AvatarImage src={selectedImgURL ?? ""} />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-```
-처음 페이지에 진입할 때 서버로 부터 가져온 프로필 이미지를 보여주기 위함입니다. selectedImgURL은 보여지는 이미지 상태, selectedImg는 로컬 이미지 파일을 선택하는데 사용됩니다.
-<br />
-
-첫번째 코드에서 handleChangeProfileImg라는 함수를 정의해, 로컬 이미지 파일을 선택할 수 있도록 합니다.
-<br />
-여기서, e.target.value는 파일 input 필드를 초기화 해서 같은 파일을 선택하더라도 이 함수가 동작될 수 있도록 합니다.
-<br />
-useEffect 구문에서 선택된 로컬 이미지 파일이 없으면 다음 구문이 실행되지 않도록 하고, 로컬 이미지 파일이 선택되거나 변경되는 경우에 URL.createObjectURL을 사용해 이미지 파일을 url로 변환시켜줍니다. 이 변환된 url은 selectedImgURL 상태에 저장됩니다.
-<br />
-결과적으로, 선택된 이미지 파일을 미리보기로 바로 보여질 수 있도록 구현했습니다.
-<br />
-
 페이지가 언마운트 되거나 이미지 파일이 변경될 때, URL.revokeObjectURL을 사용해 생성된 url을 해제시킵니다.
 <br />
 브라우저는 createObjectURL로 생성된 url을 메모리로 저장합니다. 여기서, 쓸 일이 없어진 url을 해제시키지 않으면 계속 메모리 상에 남아있게 됩니다.
