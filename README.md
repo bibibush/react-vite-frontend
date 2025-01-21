@@ -1,6 +1,5 @@
 # 증권 대시보드 웹사이트 (프론트 엔드)
 ##### 웹사이트 : https://foxstocks.site
-##### 백엔드 깃헙 페이지: https://github.com/bibibush/Foxstocks_Django_backend
 
 ## 소개
 > 네이버 증권 페이지를 크롤링해서 증권들을 한 눈에 보기 쉬운 대시보드 웹사이트를 개발했습니다.
@@ -638,6 +637,12 @@ revokeObjectURL은 메모리 누수를 방지해주는 메서드로 createObject
 </details>
 
 <br />
+
+<details>
+  <summary><b>aws s3,nginx 와 github action을 사용한 CI/CD 구현</b></summary>
+
+  
+</details>
 
 ## 문제 해결 경험
 사용자의 프로필 이미지를 업로드 또는 변경할 때 어떤 이미지는 성공적으로 업로드가 되지만 몇 이미지들은 업로드를 시도할 때 413에러를 내면서 실패했습니다.
