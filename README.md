@@ -544,67 +544,6 @@ Form 컴포넌트는 shadcn의 컴포넌트인데 react-hook-form의 FormProvide
 <details>
   <summary><b>URL.createObjectURL를 사용한 이미지 미리보기 구현</b></summary>
 
-  이미지 미리보기를 구현하기 위해서는 이미지 요소에 필요한 경로가커스텀인풋 컴포넌트의 프롭스로는 formField에 전해줄 control, name, rules 그리고 인풋의 타입이 password인지 구별하기 위한 isPassword 불리언 값 등을 받습니다.
-<br />
-또한 제네릭 변수 T를 받는데 이는 Control, Path, RegisterOption이 가져오는 제네릭 변수를 자동으로 제네릭 변수 T로 저장되게 합니다.
-<br />
-
-구현된 커스텀인풋 컴포넌트는 React.memo에 감싸져서 export됩니다. 이는 상위 컴포넌트에서 리렌더링이 많이 일어나는 경우, 현재 컴포넌트의 프롭스에 변경이 일어나지 않는 이상 리렌더링을 시키지 않기 위함입니다.
-<br />
-React.memo로 감싸지 않으면 상위컴포넌트에서 리렌더링이 일어날시 커스텀인풋 컴포넌트 또한 같이 리렌더링됩니다.
-<br />
-
-이 컴포넌트의 사용 예시를 보여드리겠습니다.
-```typescript
-const methods = useForm<RegisterFormParams>({
-    defaultValues: {
-      email: "",
-      username: "",
-      password1: "",
-      password2: "",
-    },
-  });
-
- <Form {...methods}>
-            <form
-              className="flex flex-col items-center gap-5 mt-10"
-              onSubmit={methods.handleSubmit(handleRegister)}
-            >
-              <CustomInputForm
-                className="w-[400px] bg-[#B0BAC366]"
-                control={methods.control}
-                name="email"
-                label="email"
-                rules={{
-                  required: {
-                    value: true,
-                    message: "이메일은 필수입력항목입니다.",
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message:
-                      "이메일 형식이 아닙니다. 이메일 형식으로 입력해주세요.",
-                  },
-                }}
-                placeholder="이메일을 입력해주세요."
-              />
-...
-```
-먼저 useForm을 정의해줍니다. 여기서 defaultValue를 지정해주지 않으면 shadcn ui의 폼은 경고메시지를 콘솔에 띄웁니다.
-<br />
-Form 컴포넌트는 shadcn의 컴포넌트인데 react-hook-form의 FormProvider와 사용법이 거의 흡사합니다.
-<br />
-그런 다음 폼 제출을 위한 form엘리먼트를 작성하고 자식요소로 커스텀인풋 컴포넌트를 작성합니다.
-<br />
-
-이런 식으로 커스텀 인풋 컴포넌트를 구현하면 프롭스의 rules에 따라 유효성 검사를 해주는 컴포넌트를 재사용하기 쉽게 구현할 수 있습니다.
-</details>
-
-<br />
-
-<details>
-  <summary><b>URL.createObjectURL를 사용한 이미지 미리보기 구현</b></summary>
-
   이미지 미리보기를 구현하기 위해서는 이미지 요소에 필요한 로컬파일 경로 또는 url이 필요한데, URL의 createObjectURL을 사용하면 파일 또는 블롭 객체를 url로 변환할 수 있습니다.
   <br />
 
