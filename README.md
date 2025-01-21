@@ -544,5 +544,215 @@ Form 컴포넌트는 shadcn의 컴포넌트인데 react-hook-form의 FormProvide
 <details>
   <summary><b>URL.createObjectURL를 사용한 이미지 미리보기 구현</b></summary>
 
-  이미지 미리보기를 구현하기 위해서는 이미지 요소에 필요한 url이 필요한데, 
+  이미지 미리보기를 구현하기 위해서는 이미지 요소에 필요한 경로가커스텀인풋 컴포넌트의 프롭스로는 formField에 전해줄 control, name, rules 그리고 인풋의 타입이 password인지 구별하기 위한 isPassword 불리언 값 등을 받습니다.
+<br />
+또한 제네릭 변수 T를 받는데 이는 Control, Path, RegisterOption이 가져오는 제네릭 변수를 자동으로 제네릭 변수 T로 저장되게 합니다.
+<br />
+
+구현된 커스텀인풋 컴포넌트는 React.memo에 감싸져서 export됩니다. 이는 상위 컴포넌트에서 리렌더링이 많이 일어나는 경우, 현재 컴포넌트의 프롭스에 변경이 일어나지 않는 이상 리렌더링을 시키지 않기 위함입니다.
+<br />
+React.memo로 감싸지 않으면 상위컴포넌트에서 리렌더링이 일어날시 커스텀인풋 컴포넌트 또한 같이 리렌더링됩니다.
+<br />
+
+이 컴포넌트의 사용 예시를 보여드리겠습니다.
+```typescript
+const methods = useForm<RegisterFormParams>({
+    defaultValues: {
+      email: "",
+      username: "",
+      password1: "",
+      password2: "",
+    },
+  });
+
+ <Form {...methods}>
+            <form
+              className="flex flex-col items-center gap-5 mt-10"
+              onSubmit={methods.handleSubmit(handleRegister)}
+            >
+              <CustomInputForm
+                className="w-[400px] bg-[#B0BAC366]"
+                control={methods.control}
+                name="email"
+                label="email"
+                rules={{
+                  required: {
+                    value: true,
+                    message: "이메일은 필수입력항목입니다.",
+                  },
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message:
+                      "이메일 형식이 아닙니다. 이메일 형식으로 입력해주세요.",
+                  },
+                }}
+                placeholder="이메일을 입력해주세요."
+              />
+...
+```
+먼저 useForm을 정의해줍니다. 여기서 defaultValue를 지정해주지 않으면 shadcn ui의 폼은 경고메시지를 콘솔에 띄웁니다.
+<br />
+Form 컴포넌트는 shadcn의 컴포넌트인데 react-hook-form의 FormProvider와 사용법이 거의 흡사합니다.
+<br />
+그런 다음 폼 제출을 위한 form엘리먼트를 작성하고 자식요소로 커스텀인풋 컴포넌트를 작성합니다.
+<br />
+
+이런 식으로 커스텀 인풋 컴포넌트를 구현하면 프롭스의 rules에 따라 유효성 검사를 해주는 컴포넌트를 재사용하기 쉽게 구현할 수 있습니다.
+</details>
+
+<br />
+
+<details>
+  <summary><b>URL.createObjectURL를 사용한 이미지 미리보기 구현</b></summary>
+
+  이미지 미리보기를 구현하기 위해서는 이미지 요소에 필요한 로컬파일 경로 또는 url이 필요한데, URL의 createObjectURL을 사용하면 파일 또는 블롭 객체를 url로 변환할 수 있습니다.
+  <br />
+
+  간단한 사용예시를 보여드리겠습니다.
+  ```typescript
+    const [selectedImg, setSelectedImg] = useState<File | null>(null);
+  const [selectedImgURL, setSelectedImgURL] = useState<string | null>(null);
+
+const handleChangeProfileImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setSelectedImg(file);
+
+    e.target.value = "";
+  };
+
+ useEffect(() => {
+    if (!selectedImg) {
+      return;
+    }
+
+    const convertedURL = URL.createObjectURL(selectedImg);
+    setSelectedImgURL(convertedURL);
+
+    return () => URL.revokeObjectURL(convertedURL);
+  }, [selectedImg]);
+
+...
+
+  <Avatar
+                className="cursor-pointer size-36"
+                onClick={() => profileInputRef.current?.click()}
+              >
+                <AvatarImage src={selectedImgURL ?? ""} />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+```
+먼저 selectedImg와 selectedImgURL이라는 두 개의 상태를 구현했습니다. 굳이 하나의 상태를 사용하지 않고 두 개의 상태를 사용하는 이유는
+```typescript
+const {
+    username,
+    profileImg,
+    id: userId,
+  } = useFoxStore((state) => state.user);
+
+ useEffect(() => {
+    if (!username) {
+      return;
+    }
+
+    methods.reset({
+      username,
+      password1: methods.getValues("password1"),
+      password2: methods.getValues("password2"),
+    });
+    setSelectedImgURL(profileImg);
+  }, [username, methods, profileImg]);
+
+...
+
+  <Avatar
+                className="cursor-pointer size-36"
+                onClick={() => profileInputRef.current?.click()}
+              >
+                <AvatarImage src={selectedImgURL ?? ""} />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+```
+처음 페이지에 진입할 때 서버로 부터 가져온 프로필 이미지를 보여주기 위함입니다. selectedImgURL은 보여지는 이미지 상태, selectedImg는 로컬 이미지 파일을 선택하는데 사용됩니다.
+<br />
+
+첫번째 코드에서 handleChangeProfileImg라는 함수를 정의해, 로컬 이미지 파일을 선택할 수 있도록 합니다.
+<br />
+여기서, e.target.value는 파일 input 필드를 초기화 해서 같은 파일을 선택하더라도 이 함수가 동작될 수 있도록 합니다.
+<br />
+useEffect 구문에서 선택된 로컬 이미지 파일이 없으면 다음 구문이 실행되지 않도록 하고, 로컬 이미지 파일이 선택되거나 변경되는 경우에 URL.createObjectURL을 사용해 이미지 파일을 url로 변환시켜줍니다. 이 변환된 url은 selectedImgURL 상태에 저장됩니다.
+<br />
+결과적으로, 선택된 이미지 파일을 미리보기로 바로 보여질 수 있도록 구현했습니다.
+<br />
+
+페이지가 언마운트 되거나 이미지 파일이 변경될 때, URL.revokeObjectURL을 사용해    const convertedURL = URL.createObjectURL(selectedImg);
+    setSelectedImgURL(convertedURL);
+
+    return () => URL.revokeObjectURL(convertedURL);
+  }, [selectedImg]);
+
+...
+
+  <Avatar
+                className="cursor-pointer size-36"
+                onClick={() => profileInputRef.current?.click()}
+              >
+                <AvatarImage src={selectedImgURL ?? ""} />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+```
+먼저 selectedImg와 selectedImgURL이라는 두 개의 상태를 구현했습니다. 굳이 하나의 상태를 사용하지 않고 두 개의 상태를 사용하는 이유는
+```typescript
+const {
+    username,
+    profileImg,
+    id: userId,
+  } = useFoxStore((state) => state.user);
+
+ useEffect(() => {
+    if (!username) {
+      return;
+    }
+
+    methods.reset({
+      username,
+      password1: methods.getValues("password1"),
+      password2: methods.getValues("password2"),
+    });
+    setSelectedImgURL(profileImg);
+  }, [username, methods, profileImg]);
+
+...
+
+  <Avatar
+                className="cursor-pointer size-36"
+                onClick={() => profileInputRef.current?.click()}
+              >
+                <AvatarImage src={selectedImgURL ?? ""} />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+```
+처음 페이지에 진입할 때 서버로 부터 가져온 프로필 이미지를 보여주기 위함입니다. selectedImgURL은 보여지는 이미지 상태, selectedImg는 로컬 이미지 파일을 선택하는데 사용됩니다.
+<br />
+
+첫번째 코드에서 handleChangeProfileImg라는 함수를 정의해, 로컬 이미지 파일을 선택할 수 있도록 합니다.
+<br />
+여기서, e.target.value는 파일 input 필드를 초기화 해서 같은 파일을 선택하더라도 이 함수가 동작될 수 있도록 합니다.
+<br />
+useEffect 구문에서 선택된 로컬 이미지 파일이 없으면 다음 구문이 실행되지 않도록 하고, 로컬 이미지 파일이 선택되거나 변경되는 경우에 URL.createObjectURL을 사용해 이미지 파일을 url로 변환시켜줍니다. 이 변환된 url은 selectedImgURL 상태에 저장됩니다.
+<br />
+결과적으로, 선택된 이미지 파일을 미리보기로 바로 보여질 수 있도록 구현했습니다.
+<br />
+
+페이지가 언마운트 되거나 이미지 파일이 변경될 때, URL.revokeObjectURL을 사용해 생성된 url을 해제시킵니다.
+<br />
+브라우저는 createObjectURL로 생성된 url을 메모리로 저장합니다. 여기서, 쓸 일이 없어진 url을 해제시키지 않으면 계속 메모리 상에 남아있게 됩니다.
+<br />
+revokeObjectURL은 메모리 누수를 방지해주는 메서드로 createObjectURL을 사용했다면 필수적으로 사용됩니다.
+<br />
+
+이렇게 이미지 미리보기를 구현했습니다.
 </details>
