@@ -636,3 +636,73 @@ revokeObjectURL은 메모리 누수를 방지해주는 메서드로 createObject
 
 이렇게 이미지 미리보기를 구현했습니다.
 </details>
+
+<br />
+
+## 문제 해결 경험
+사용자의 프로필 이미지를 업로드 또는 변경할 때 어떤 이미지는 성공적으로 업로드가 되지만 몇 이미지들은 업로드를 시도할 때 413에러를 내면서 실패했습니다.
+<br />
+이게 어떤 에러인가 검색해 보니 413 Error Payload Too Large, 서버한테 보내는 요청의 크기가 너무 커서 발생하는 에러라고 나왔습니다. 즉, 업로드하는 이미지가 너무 커서 용량 제한이 걸린 것이었습니다.
+<br />
+프론트엔드에서는 이미지 파일의 용량을 제한하는 로직을 구현하지 않았기 때문에 백엔드인 Django에서 기본 용량제한을 2.5MB에서 5MB로 변경했습니다.
+<br />
+이제 잘 되나 싶었지만 5mb 이하인 파일을 업로드해도 여전히 413에러를 내면서 실패했습니다.
+<br />
+어떤 부분이 잘못되었나 더 검색을 해보니, 실제 웹을 운영시키는 웹 서버에도 서버한테 요청에 기본 용량 제한이 있다는 것을 알았습니다. 저는 NGINX를 사용하는데 NGINX는 기본 용량 제한이 1MB입니다.
+<br />
+
+nginx에서 설정을 해주었습니다.
+```nginx
+server {
+        listen 80;
+        server_name foxstocks.site www.foxstocks.site;
+
+        return 301 https://$host$request_uri;
+}
+
+server {
+        listen 443 ssl;
+        server_name foxstocks.site www.foxstocks.site;
+
+        ssl_certificate /etc/letsencrypt/live/foxstocks.site/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/foxstocks.site/privkey.pem;
+        ssl_trusted_certificate /etc/letsencrypt/live/foxstocks.site/chain.pem;
+
+        ...
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        client_max_body_size 5M;
+
+        location / {
+                try_files $uri /index.html;
+        }
+
+        location /api {
+                        proxy_pass http://django:8000;  # Django 애플리케이션이 실행 중인 gunicorn 서버로 요청 전달
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /admin {
+                         proxy_pass http://django:8000;
+                         proxy_set_header Host $host;
+                         proxy_set_header X-Real-IP $remote_addr;
+                         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                         proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location /static {
+                          alias /usr/share/nginx/static/;
+        }
+        location /media {
+                          alias /usr/share/nginx/media/;
+        }
+
+}
+```
+nginx 설정 파일에서 기본 용량 제한을 5MB로 설정해주었습니다.
+<br />
+그런 다음 파일 업로드를 실행했더니 성공적으로 업로드되었습니다.
