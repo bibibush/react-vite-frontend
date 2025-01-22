@@ -639,10 +639,158 @@ revokeObjectURL은 메모리 누수를 방지해주는 메서드로 createObject
 <br />
 
 <details>
-  <summary><b>aws s3,nginx 와 github action을 사용한 CI/CD 구현</b></summary>
+  <summary><b>aws s3,nginx, docker, github action을 사용한 CI/CD 구현</b></summary>
 
-  
+전체 프로젝트의 배포는 aws ec2에 docker-compose를 사용해서 배포했습니다. 프론트엔드의 배포는 빌드를 실행한 뒤, 빌드된 폴더를 aws s3에 배포합니다.
+<br />
+그리고 ec2에 배포할 전체 프로젝트 디렉토리 안에 awscli 명령어인 aws s3 sync를 사용해서 s3에 저장되어있는 파일들을 디렉토리로서 저장합니다.
+<br />
+
+웹서버는 NGINX를 이용했습니다. docker-compose의 volumes와 NGINX를 사용해 전체 프로젝트안에 있는 프론트엔드 배포 폴더가 화면에 나타날 수 있도록 구현했습니다.
+<br />
+
+먼저 docker-compose.yml파일입니다.
+```YAML
+...
+
+  nginx:
+    container_name: my-nginx
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./dist:/usr/share/nginx/html/
+      ...
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+```
+nginx.conf 파일입니다.
+```nginx
+server {
+        listen 80;
+        server_name foxstocks.site www.foxstocks.site;
+
+        return 301 https://$host$request_uri;
+}
+
+server {
+        listen 443 ssl;
+        server_name foxstocks.site www.foxstocks.site;
+
+        ssl_certificate /etc/letsencrypt/live/foxstocks.site/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/foxstocks.site/privkey.pem;
+        ssl_trusted_certificate /etc/letsencrypt/live/foxstocks.site/chain.pem;
+
+        ...
+        
+        root /usr/share/nginx/html;
+        index index.html;
+
+        client_max_body_size 5M;
+
+        location / {
+                try_files $uri /index.html;
+        }
+
+        location /api {
+                        proxy_pass http://django:8000;
+                        proxy_set_header Host $host;
+                        proxy_set_header X-Real-IP $remote_addr;
+                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        location /admin {
+                         proxy_pass http://django:8000;
+                         proxy_set_header Host $host;
+                         proxy_set_header X-Real-IP $remote_addr;
+                         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                         proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location /static {
+                          alias /usr/share/nginx/static/;
+        }
+        location /media {
+                          alias /usr/share/nginx/media/;
+        }
+
+}
+```
+aws s3로 부터 가져온 파일들은 전체 프로젝트의 dist 디렉토리안에 저장되어있습니다. docker-compose의 volumes는 이 dist폴더를 nginx서버 안에 있는 /usr/share/nginx/html 디렉토리와 매핑해서 NGINX 서버가 이 html 디렉토리를 dist 디렉토리로서 배포시킬 수 있도록 합니다.
+<br />
+
+이런 식으로 프로젝트의 배포를 문제없이 할 수 있었습니다.
+<br />
+하지만 코드가 변경될 때마다 직접 aws s3에 배포하고 다시 전체 프로젝트로 복사시키는 작업은 시간도 걸리고 귀찮은 작업이엇습니다.
+<br />
+전의 회사에서는 github action을 사용해서 CI/CD를 구현했었고 어렵지 않게 할 수 있어서 이번에도 github action으로 CI/CD를 구현했습니다.
+먼저 프론트엔드 프로젝트의 루트 디렉토리에서 .github/workflows 디렉토리를 생성한 뒤, ci-cd.yml 파일을 생성했습니다.
+```YAML
+name: build and deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ap-northeast-2
+
+      - name: Deploy to s3
+        run: aws s3 sync ./dist s3://foxstocks-vite
+
+      - name: Connecting to ssh
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ubuntu
+          key: ${{secrets.EC2_SSH_KEY}}
+          port: 22
+          script: |
+            cd Foxstocks_Django_backend
+            rm -rf dist
+            aws s3 sync s3://foxstocks-vite ./dist
+            docker stop my-nginx
+            docker compose up -d nginx
+
+```
+github action 안에서 'npm install'를 사용해 의존성 라이브리러들을 설치하고 'npm run build'로 배포할 폴더를 생성합니다.
+<br />
+aws-actions를 사용해 aws 인증을 한 뒤, s3에 aws s3 sync를 사용해 배포합니다.
+<br />
+appleboy/ssh-action을 사용하면 github action에서도 aws ec2에 ssh접속을 할 수 있습니다. ec2에 있는 전체 프로젝트 디렉토리로 이동한 뒤 기존의 빌드 폴더를 삭제합니다.
+<br />
+그런 다음, aws s3 sync 명령어를 사용해 s3에 있는 정적 파일들을 dist 폴더안에 복사합니다.
+<br />
+docker 명령어를 사용해 기존에 실행하고 있는 nginx 서버를 잠시 중단 시키고 docker compose up -d nginx 명령어를 사용해 nginx 서버를 다시 가동시킵니다.
+<br />
+이렇게 하면 새로운 nginx서버가 dist폴더를 다시 매핑하여 사용할 수 있도록 합니다.
+<br />
+
+이렇게 github action을 사용해서 실행할 명령어들을 나열하면 github의 main 브랜치에 푸시만 하면 자동으로 명령들을 실행시켜 주기 때문에 정말 간편히 배포를 실행시킬 수 있습니다.
 </details>
+
+<br />
 
 ## 문제 해결 경험
 사용자의 프로필 이미지를 업로드 또는 변경할 때 어떤 이미지는 성공적으로 업로드가 되지만 몇 이미지들은 업로드를 시도할 때 413에러를 내면서 실패했습니다.
