@@ -1,5 +1,5 @@
 # 증권 대시보드 웹사이트 (프론트 엔드)
-##### 웹사이트 : https://foxstocks.site
+##### 웹사이트 : https://foxstocks.site (aws 프리티어 만료로 인해 당분간 사이트 다운)
 ##### 백엔드 상세 설명 : https://github.com/bibibush/Foxstocks_Django_backend
 
 ## 소개
